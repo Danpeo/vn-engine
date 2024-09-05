@@ -57,7 +57,7 @@ public class DialoguePanel
         switch (Animation)
         {
             case Slide:
-                if (Y.IsBarelyEqual(_slideAnimTargetY))
+                if (Y.PracticallyNotEqual(_slideAnimTargetY))
                 {
                     Y = _isVisible
                         ? Math.Max(_slideAnimTargetY, Y - _animationSpeed * deltaTime)
@@ -104,6 +104,6 @@ public class DialoguePanel
     }
 
     public bool IsFullyVisible() =>
-        (Animation == Slide && X.IsAlmostEqual(50)) ||
+        (Animation == Slide && X.AlmostEqual(50)) ||
         _alpha >= 1.0f;
 }
