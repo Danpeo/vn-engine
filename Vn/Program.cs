@@ -1,15 +1,31 @@
-﻿using Raylib_cs;
-using Vn.Constants;
+﻿using Vn.Constants;
 using Vn.Story;
 using Vn.UI;
+using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
 
 InitWindow(800, 600, "Visual Novel");
 SetWindowState(ConfigFlags.ResizableWindow);
 SetTargetFPS(60);
 
-var dialogue2 = new Dialogue("Это2 пример диалога в визуальной новелле.", 0.02f, 0.03f,
-    character: new Character("Нарутыч"), textColor: Color.Pink);
+var naruto = new Character("Нарутыч", new Dictionary<string, string>{ ["Naruto"] = "Naruto" }, Color.Orange);
+
+var sasuke = new Character("Сасаке");
+
+int currDialogueInex = 0;
+
+var dialogues = new List<Dialogue>
+{
+    new("САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!", character: naruto),
+    new("НАРУТОООО!!!", character: sasuke),
+    new("НЕТ САСУКЕЕЕЕЕЕЕЕ!!!", character: naruto),
+    new("НААААААААРУТО ооооооооооо!!!", character: sasuke),
+    new("ААААААААААААААААГр!!!", character: naruto),
+    new("ЭУУУУУУУУУУУУУУУУУ!!!", character: sasuke),
+    new("ВААУУ!!!"),
+};
+
+var currentDialogue = dialogues[currDialogueInex];
 
 const int panelPadding = 50;
 
@@ -24,28 +40,34 @@ var dialoguePanel = new DialoguePanel(
     DialoguePanelAnimation.Slide
 );
 
+
 while (!WindowShouldClose())
 {
     float deltaTime = GetFrameTime();
 
-    if (IsMouseButtonPressed(MouseButton.Right))
+    if (IsMouseButtonPressed(Right))
     {
         dialoguePanel.ToggleVisibility();
     }
 
+    if (IsMouseButtonPressed(Left))
+    {
+        if (currDialogueInex < dialogues.Count - 1 && currentDialogue.IsFinishedDrawing())
+            currentDialogue = dialogues[++currDialogueInex];
+        else
+            currentDialogue.Skip();
+    }
+
     dialoguePanel.Update(deltaTime);
-    dialogue2.Update(deltaTime);
-    
-    //dialoguePanel.X = panelPadding;
-    /*
-    dialoguePanel.Y = GetScreenHeight() - 200;*/
+    currentDialogue.Update(deltaTime);
+
     dialoguePanel.Width = GetScreenWidth() - 2 * panelPadding;
 
     BeginDrawing();
     ClearBackground(Color.White);
 
     dialoguePanel.Draw();
-    dialogue2.Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
+    dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
     EndDrawing();
 }
