@@ -8,7 +8,7 @@ public class Character
     public string CurrentDisplayNameKey { get; set; } = "Main";
     public Color Color { get; set; }
     public Dictionary<string, string> AltNames { get; set; }
-
+    
     public Character(string name, Dictionary<string, string>? altNames = null, Color? color = null)
     {
         Name = name;

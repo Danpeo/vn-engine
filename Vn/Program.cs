@@ -5,6 +5,7 @@ using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
 
 InitWindow(800, 600, "Visual Novel");
+InitAudioDevice();     
 SetWindowState(ConfigFlags.ResizableWindow);
 SetTargetFPS(60);
 
@@ -16,7 +17,8 @@ int currDialogueInex = 0;
 
 var dialogues = new List<Dialogue>
 {
-    new("САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!", character: naruto),
+    new("САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!",
+        character: naruto, audioType: DialogueAudioType.SoundEffect, soundEffect: LoadSound("Resources/Audio/voiceSfx.mp3")),
     new("НАРУТОООО!!!", character: sasuke),
     new("НЕТ САСУКЕЕЕЕЕЕЕЕ!!!", character: naruto),
     new("НААААААААРУТО ооооооооооо!!!", character: sasuke),
@@ -40,7 +42,6 @@ var dialoguePanel = new DialoguePanel(
     DialoguePanelAnimation.Slide
 );
 
-
 while (!WindowShouldClose())
 {
     float deltaTime = GetFrameTime();
@@ -49,7 +50,7 @@ while (!WindowShouldClose())
     {
         dialoguePanel.ToggleVisibility();
     }
-
+        
     if (IsMouseButtonPressed(Left))
     {
         if (currDialogueInex < dialogues.Count - 1 && currentDialogue.IsFinishedDrawing())
@@ -73,5 +74,5 @@ while (!WindowShouldClose())
 }
 
 Fonts.Unload();
-
+CloseAudioDevice();     
 CloseWindow();

@@ -2,7 +2,6 @@ using System.Numerics;
 using Vn.Constants;
 using Vn.UI;
 using Vn.Utils;
-using static LanguageExt.Option<Vn.Story.Character>;
 using static Raylib_cs.Raylib;
 
 namespace Vn.Story;
@@ -10,7 +9,7 @@ namespace Vn.Story;
 public class Dialogue
 {
     public string Text { get; private set; }
-    public Option<Character> Character { get; private set; }
+    public Character? Character { get; private set; }
     public Color TextColor { get; set; }
     private int _charIndex;
     private float _timePassed;
@@ -18,15 +17,22 @@ public class Dialogue
     private readonly float _alphaSpeed;
     private readonly List<float> _alphas;
 
-    public Dialogue(string text, float displaySpeed = 0.02f, float alphaSpeed = 0.03f,
-        Color? textColor = null, Option<Character>? character = null)
+    private DialogueAudioType _audioType;
+    private Sound? _voiceLine;
+    private Sound? _soundEffect;
+    
+    public Dialogue(string text, float displaySpeed = 0.02f, float alphaSpeed = 0.03f, Character? character = null,
+        Color? textColor = null, DialogueAudioType audioType = DialogueAudioType.None, Sound? voiceLine = null, Sound? soundEffect = null)
     {
         Text = text;
         _charDisplaySpeed = displaySpeed;
         _alphaSpeed = alphaSpeed;
         _alphas = new List<float>();
+        _audioType = audioType;
+        _voiceLine = voiceLine;
+        _soundEffect = soundEffect;
         TextColor = textColor ?? Color.LightGray;
-        Character = character ?? None;
+        Character = character ?? null;
     }
 
     public void Update(float deltaTime)
@@ -38,6 +44,8 @@ public class Dialogue
             _charIndex++;
             _timePassed = 0.0f;
             _alphas.Add(0.0f);
+            
+            PlayCharacterAudio();
         }
 
         for (int i = 0; i < _alphas.Count; i++)
@@ -50,6 +58,22 @@ public class Dialogue
                     _alphas[i] = 1.0f;
                 }
             }
+        }
+    }
+
+    private void PlayCharacterAudio()
+    {
+        if (_audioType is DialogueAudioType.SoundEffect)
+        {
+            _soundEffect.IfSome(PlaySound);
+        }
+    }
+
+    private void AdjustCharSpeedForSoundEffect()
+    {
+        if (_audioType is DialogueAudioType.SoundEffect && _soundEffect.HasValue)
+        {
+            // TODO
         }
     }
 
