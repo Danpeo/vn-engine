@@ -1,4 +1,4 @@
-namespace Vn.UI;
+namespace Aweo.UI;
 
 public enum DialoguePanelAnimation
 {

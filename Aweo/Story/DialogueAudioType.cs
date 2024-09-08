@@ -1,4 +1,4 @@
-namespace Vn.Story;
+namespace Aweo.Story;
 
 public enum DialogueAudioType
 {

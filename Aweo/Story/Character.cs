@@ -1,6 +1,4 @@
-using Raylib_cs;
-
-namespace Vn.Story;
+namespace Aweo.Story;
 
 public class Character
 {

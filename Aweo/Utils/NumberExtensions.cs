@@ -1,4 +1,4 @@
-namespace Vn.Utils;
+namespace Aweo.Utils;
 
 public static class NumberExtensions
 {

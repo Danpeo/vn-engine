@@ -14,4 +14,8 @@
         </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Aweo\Aweo.csproj" />
+    </ItemGroup>
+
 </Project>

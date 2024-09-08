@@ -1,10 +1,10 @@
 using System.Numerics;
-using Vn.Constants;
-using Vn.UI;
-using Vn.Utils;
+using Aweo.Setup;
+using Aweo.UI;
+using Aweo.Utils;
 using static Raylib_cs.Raylib;
 
-namespace Vn.Story;
+namespace Aweo.Story;
 
 public class Dialogue
 {
@@ -84,8 +84,8 @@ public class Dialogue
         var pos = new Vector2(panel.X + padding, panel.Y + namePadding);
 
         Character.IfSome(
-            character => DrawTextEx(Fonts.Accent, character.CurrentDisplayName(), new Vector2(panel.X + padding, panel.Y + padding),
-                Fonts.Accent.BaseSize, 2,
+            character => DrawTextEx(Init.AccentFont, character.CurrentDisplayName(), new Vector2(panel.X + padding, panel.Y + padding),
+                Init.AccentFont.BaseSize, 2,
                 character.Color)
         );
         

@@ -1,9 +1,8 @@
-using Raylib_cs;
-using Vn.Utils;
+using Aweo.Utils;
 using static Raylib_cs.Raylib;
-using static Vn.UI.DialoguePanelAnimation;
+using static Aweo.UI.DialoguePanelAnimation;
 
-namespace Vn.UI;
+namespace Aweo.UI;
 
 public class DialoguePanel
 {

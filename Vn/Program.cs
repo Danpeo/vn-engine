@@ -1,6 +1,8 @@
-﻿using Vn.Constants;
-using Vn.Story;
-using Vn.UI;
+﻿using Aweo.Setup;
+using Aweo.Story;
+using Aweo.UI;
+using Raylib_cs;
+using Vn.Constants;
 using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
 
@@ -8,6 +10,8 @@ InitWindow(800, 600, "Visual Novel");
 InitAudioDevice();     
 SetWindowState(ConfigFlags.ResizableWindow);
 SetTargetFPS(60);
+
+Init.Fonts(Fonts.Main, Fonts.Accent);
 
 var naruto = new Character("Нарутыч", new Dictionary<string, string>{ ["Naruto"] = "Naruto" }, Color.Orange);
 
