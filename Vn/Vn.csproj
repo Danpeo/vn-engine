@@ -12,6 +12,7 @@
         <Content Include="Resources\**\*.*">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+        <PackageReference Include="SkiaSharp" Version="2.88.8" />
     </ItemGroup>
 
 </Project>

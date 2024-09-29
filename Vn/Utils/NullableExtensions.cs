@@ -17,7 +17,7 @@ public static class NullableExtensions
             action();
         }
     }
-    
+
     public static void IfSome<T>(this T? value, Action<T> action) where T : struct
     {
         if (value.HasValue)
@@ -25,7 +25,7 @@ public static class NullableExtensions
             action(value.Value);
         }
     }
-    
+
     public static void IfNull<T>(this T? value, Action action) where T : struct
     {
         if (!value.HasValue)
@@ -45,6 +45,9 @@ public static class NullableExtensions
             ifNone();
         }
     }
+
+    public static U Match<T, U>(this T? value, Func<T, U> ifSome, Func<U> ifNone) =>
+        value is not null ? ifSome(value) : ifNone();
 
     public static bool IsSome<T>(this T? value) => value is not null;
 }
