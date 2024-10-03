@@ -12,7 +12,7 @@ public class Background : ITexture
         if (Img.IsJpeg(texturePath))
         {
             var jpegNotFoundPath = Paths.Bg("jpeg_not_supported.png");
-            Img.GeneratePngPlaceholder($"JPEG files are not supported: \"{texturePath}\"", GetScreenWidth(),GetScreenHeight(), 
+            Img.GeneratePng($"JPEG files are not supported: \"{texturePath}\"", GetScreenWidth(),GetScreenHeight(), 
                 jpegNotFoundPath);
 
             texturePath = jpegNotFoundPath;
@@ -23,7 +23,7 @@ public class Background : ITexture
         if (Texture.Id == 0)
         {
             var placeholderPath = Paths.Bg("placeholder.png");
-            Img.GeneratePngPlaceholder($"File not found: \"{texturePath}\"", GetScreenWidth(),GetScreenHeight(), placeholderPath);
+            Img.GeneratePng($"File not found: \"{texturePath}\"", GetScreenWidth(),GetScreenHeight(), placeholderPath);
             Texture = LoadTexture(placeholderPath);
         }
         

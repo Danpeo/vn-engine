@@ -4,7 +4,7 @@ namespace Vn.Utils;
 
 public static class Img
 {
-    public static void GeneratePngPlaceholder(string text, int width, int height, string fileName)
+    public static void GeneratePng(string text, int width, int height, string fileName)
     {
         using var bitmap = new SKBitmap(width, height);
         using (var canvas = new SKCanvas(bitmap))
