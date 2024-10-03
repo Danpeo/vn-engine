@@ -39,16 +39,26 @@ public static class Img
         }
     }
 
-    public static void ConvertJpgToPng(string filePath, string? newFilePath = null)
+    public static bool IsJpeg(string path)
     {
-        using var inputStream = File.OpenRead(filePath);
-        using var originalImage = SKBitmap.Decode(inputStream);
-        originalImage.IfSome(bitmap =>
+        if (!File.Exists(path)) return false;
+
+        try
         {
-            using var image = SKImage.FromBitmap(bitmap);
-            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-            using var outputStream = File.OpenWrite(newFilePath.Match(s => s, () => filePath));
-            data.SaveTo(outputStream);
-        });
+            using (var stream = File.OpenRead(path))
+            {
+                using (var codec = SKCodec.Create(stream))
+                {
+                    if (codec == null) return false;
+
+                    return codec.EncodedFormat == SKEncodedImageFormat.Jpeg;
+                }
+            }
+        }
+        catch
+        {
+            return false;
+        }
     }
+
 }

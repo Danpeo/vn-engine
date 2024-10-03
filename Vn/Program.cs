@@ -43,15 +43,7 @@ var dialoguePanel = new DialoguePanel(
     DialoguePanelAnimation.Slide
 );
 
-var bgPath = Paths.Bg("naruto.png");
-Texture2D background = LoadTexture(bgPath);
-
-if (background.Id == 0)
-{
-    Img.GeneratePngPlaceholder($"File not found: \"{bgPath}\"", GetScreenWidth(),GetScreenHeight(), "Resources/Bg/placeholder.png");
-    background = LoadTexture("Resources/Bg/placeholder.png");
-    Console.WriteLine("Ошибка загрузки текстуры фона!");
-}
+var bg = new Background(Paths.Bg("bg1.png"));
 
 while (!WindowShouldClose())
 {
@@ -78,10 +70,7 @@ while (!WindowShouldClose())
     BeginDrawing();
     ClearBackground(Color.White);
 
-    int posX = (GetScreenWidth() - background.Width) / 2;
-    int posY = (GetScreenHeight() - background.Height) / 2;
-
-    DrawTexture(background, posX, posY, Color.White);
+    bg.Draw();
     dialoguePanel.Draw();
     dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
@@ -90,5 +79,5 @@ while (!WindowShouldClose())
 
 Fonts.Unload();
 CloseAudioDevice();    
-UnloadTexture(background);
+TextureManager.UnloadAll();
 CloseWindow();
