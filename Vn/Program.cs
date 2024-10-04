@@ -6,11 +6,11 @@ using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
 
 InitWindow(800, 600, "Visual Novel");
-InitAudioDevice();     
+InitAudioDevice();
 SetWindowState(ConfigFlags.ResizableWindow);
 SetTargetFPS(60);
 
-var naruto = new Character("Нарутыч", new Dictionary<string, string>{ ["Naruto"] = "Naruto" }, Color.Orange);
+var naruto = new Character("Нарутыч", new Dictionary<string, string> { ["Naruto"] = "Naruto" }, Color.Orange);
 
 var sasuke = new Character("Сасаке");
 
@@ -18,8 +18,10 @@ int currDialogueInex = 0;
 
 var dialogues = new List<Dialogue>
 {
-    new("САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!",
-        character: naruto, audioType: DialogueAudioType.SoundEffect, soundEffect: LoadSound("Resources/Audio/voiceSfx.mp3")),
+    new(
+        "САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!",
+        character: naruto, audioType: DialogueAudioType.SoundEffect,
+        soundEffect: LoadSound("Resources/Audio/voiceSfx.mp3")),
     new("НАРУТОООО!!!", character: sasuke),
     new("НЕТ САСУКЕЕЕЕЕЕЕЕ!!!", character: naruto),
     new("НААААААААРУТО ооооооооооо!!!", character: sasuke),
@@ -43,7 +45,10 @@ var dialoguePanel = new DialoguePanel(
     DialoguePanelAnimation.Slide
 );
 
-var bg = new Background(Paths.Bg("bg1.png"));
+var bg = new Background(Paths.Bg("bg1.png"), BackgroundAnimation.SlideIn, AnimationSpeed.VerySlow);
+var bg2 = new Background(Paths.Bg("bg2.png"), BackgroundAnimation.FadeIn, AnimationSpeed.VeryFast);
+
+Bg.SetCurrent(bg);
 
 while (!WindowShouldClose())
 {
@@ -53,13 +58,22 @@ while (!WindowShouldClose())
     {
         dialoguePanel.ToggleVisibility();
     }
-        
+
     if (IsMouseButtonPressed(Left))
     {
         if (currDialogueInex < dialogues.Count - 1 && currentDialogue.IsFinishedDrawing())
+        {
             currentDialogue = dialogues[++currDialogueInex];
+            if (currDialogueInex % 2 == 0)
+                Bg.SetCurrent(bg);
+            else
+                Bg.SetCurrent(bg2);
+        }
         else
+        {
             currentDialogue.Skip();
+            bg.CompleteAnimation();
+        }
     }
 
     dialoguePanel.Update(deltaTime);
@@ -69,8 +83,9 @@ while (!WindowShouldClose())
 
     BeginDrawing();
     ClearBackground(Color.White);
+    
+    Bg.DrawCurrent();
 
-    bg.Draw();
     dialoguePanel.Draw();
     dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
@@ -78,6 +93,6 @@ while (!WindowShouldClose())
 }
 
 Fonts.Unload();
-CloseAudioDevice();    
+CloseAudioDevice();
 TextureManager.UnloadAll();
 CloseWindow();

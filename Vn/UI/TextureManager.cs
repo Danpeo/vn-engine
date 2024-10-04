@@ -1,6 +1,6 @@
 using Vn.Story;
 
-namespace Vn.Utils;
+namespace Vn.UI;
 
 public static class TextureManager
 {
