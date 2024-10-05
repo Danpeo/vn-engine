@@ -4,6 +4,7 @@ using Vn.UI;
 using Vn.Utils;
 using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
+using Textures = Vn.UI.Textures;
 
 InitWindow(1280, 720, "Visual Novel");
 InitAudioDevice();
@@ -45,9 +46,9 @@ var dialoguePanel = new DialoguePanel(
     DialoguePanelAnimation.Slide
 );
 
-var bg = new Background(Paths.Bg("bg1.png"), BackgroundAnimation.SlideIn, AnimationSpeed.Normal);
-var bg2 = new Background(Paths.Bg("orig.png"), BackgroundAnimation.SlideIn, AnimationSpeed.Normal);
-var dv = new Background(Paths.Sprites("dv pioneer normal.png"), BackgroundAnimation.FadeIn, AnimationSpeed.VeryFast);
+var bg = new Background(Paths.Bg("bg1.png"), ImageAnimation.None, AnimationSpeed.Normal);
+var bg2 = new Background(Paths.Bg("orig.png"), ImageAnimation.Fade, AnimationSpeed.Normal);
+var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.None, AnimationSpeed.VeryFast, PositionOption.Left);
 
 Bg.SetCurrent(bg);
 
@@ -93,6 +94,8 @@ while (!WindowShouldClose())
     Bg.DrawPrev();
     Bg.DrawCurrent();
     
+    dv.Draw();
+    
     dialoguePanel.Draw();
     dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
@@ -101,5 +104,5 @@ while (!WindowShouldClose())
 
 Fonts.Unload();
 CloseAudioDevice();
-TextureManager.UnloadAll();
+Textures.UnloadAll();
 CloseWindow();

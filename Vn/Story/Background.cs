@@ -1,57 +1,38 @@
 using System.Numerics;
-using Vn.Constants;
 using Vn.UI;
-using Vn.Utils;
+using Textures = Vn.UI.Textures;
 
 namespace Vn.Story;
 
 public class Background : ITexture
 {
-    public Texture2D Texture { get; private set; }
-    public BackgroundAnimation Animation { get; private set; }
-    public AnimationSpeed OriginalAnimationSpeed { get; private set; }
-    public AnimationSpeed CurrentAnimationSpeed { get; set; }
+    private readonly Texture2D _texture;
+    private readonly ImageAnimation _animation;
+    private readonly AnimationSpeed _originalAnimationSpeed;
+    private AnimationSpeed _currentAnimationSpeed;
     private float _alpha;
     private float _slidePosX;
-    private float _slidePosY;
     private bool _animationCompleted;
     private float _scaleX;
     private float _scaleY;
 
-    public Background(string texturePath, BackgroundAnimation animation = BackgroundAnimation.FadeIn,
+    public Background(string texturePath, ImageAnimation animation = ImageAnimation.Fade,
         AnimationSpeed originalAnimationSpeed = AnimationSpeed.Normal)
     {
-        Animation = animation;
-        OriginalAnimationSpeed = originalAnimationSpeed;
-        CurrentAnimationSpeed = originalAnimationSpeed;
-
-        if (Img.IsJpeg(texturePath))
-        {
-            var jpegNotFoundPath = Paths.Bg("jpeg_not_supported.png");
-            Img.GeneratePng($"JPEG files are not supported: \"{texturePath}\"", GetScreenWidth(), GetScreenHeight(),
-                jpegNotFoundPath);
-
-            texturePath = jpegNotFoundPath;
-        }
-
-        Texture = LoadTexture(texturePath);
-
-        if (Texture.Id == 0)
-        {
-            var placeholderPath = Paths.Bg("placeholder.png");
-            Img.GeneratePng($"File not found: \"{texturePath}\"", GetScreenWidth(), GetScreenHeight(), placeholderPath);
-            Texture = LoadTexture(placeholderPath);
-        }
-
-        _slidePosX = -Texture.Width;
-        _slidePosY = CenterPosY();
-        TextureManager.Add(this);
+        _animation = animation;
+        _originalAnimationSpeed = originalAnimationSpeed;
+        _currentAnimationSpeed = originalAnimationSpeed;
+      
+        Textures.Assign(ref _texture, texturePath);
+        
+        _slidePosX = -_texture.Width;
+        Textures.Add(this);
     }
 
-    public void UpdateScale()
+    private void UpdateScale()
     {
-        _scaleX = (float)GetScreenWidth() / Texture.Width;
-        _scaleY = (float)GetScreenHeight() / Texture.Height;
+        _scaleX = (float)GetScreenWidth() / _texture.Width;
+        _scaleY = (float)GetScreenHeight() / _texture.Height;
 
         float minScale = Math.Min(_scaleX, _scaleY);
 
@@ -62,22 +43,22 @@ public class Background : ITexture
     public void Draw()
     {
         UpdateScale();
-
+        
         if (_animationCompleted)
         {
             DrawWithNoneAnimation();
             return;
         }
 
-        switch (Animation)
+        switch (_animation)
         {
-            case BackgroundAnimation.None:
+            case ImageAnimation.None:
                 DrawWithNoneAnimation();
                 break;
-            case BackgroundAnimation.FadeIn:
+            case ImageAnimation.Fade:
                 DrawWithFadeAnimation();
                 break;
-            case BackgroundAnimation.SlideIn:
+            case ImageAnimation.Slide:
                 DrawWithSlideAnimation();
                 break;
             default:
@@ -91,19 +72,19 @@ public class Background : ITexture
         _animationCompleted = true;
         _alpha = 1.0f;
         _slidePosX = CenterPosX();
-        CurrentAnimationSpeed = OriginalAnimationSpeed;
+        _currentAnimationSpeed = _originalAnimationSpeed;
     }
 
     public void Reset()
     {
         _animationCompleted = false;
         _alpha = 0.0f;
-        _slidePosX = -Texture.Width;
+        _slidePosX = -_texture.Width;
     }
 
     private void DrawWithSlideAnimation()
     {
-        var slideShiftSpeed = CurrentAnimationSpeed switch
+        var slideShiftSpeed = _currentAnimationSpeed switch
         {
             AnimationSpeed.VerySlow => 15f,
             AnimationSpeed.Slow => 30f,
@@ -123,7 +104,7 @@ public class Background : ITexture
             }
         }
 
-        DrawTexture(Texture, (int)_slidePosX, (int)_slidePosY, Color.White);
+        DrawTextureEx(_texture, new Vector2(_slidePosX, CenterPosY()), 0.0f, _scaleX, Color.White);
     }
 
     private void DrawWithFadeAnimation()
@@ -142,11 +123,11 @@ public class Background : ITexture
 
         var fadeColor = new Color(255, 255, 255, (int)(_alpha * 255));
         var pos = CenterPosition();
-        DrawTextureEx(Texture, pos, 0.0f, _scaleX, fadeColor);
+        DrawTextureEx(_texture, pos, 0.0f, _scaleX, fadeColor);
     }
 
     private float AlphaSpeed() =>
-        CurrentAnimationSpeed switch
+        _currentAnimationSpeed switch
         {
             AnimationSpeed.VerySlow => 0.01f,
             AnimationSpeed.Slow => 0.02f,
@@ -159,26 +140,26 @@ public class Background : ITexture
     private void DrawWithNoneAnimation()
     {
         var pos = CenterPosition();
-        DrawTextureEx(Texture, pos, 0.0f, _scaleX, Color.White);
+        DrawTextureEx(_texture, pos, 0.0f, _scaleX, Color.White);
     }
 
     private Vector2 CenterPosition()
     {
-        float posX = (GetScreenWidth() - Texture.Width * _scaleX) / 2;
-        float posY = (GetScreenHeight() - Texture.Height * _scaleY) / 2;
+        float posX = CenterPosX();
+        float posY = CenterPosY();
         return new Vector2(posX, posY);
     }
 
-    private float CenterPosX() => (GetScreenWidth() - Texture.Width) / 2;
-    private float CenterPosY() => (GetScreenHeight() - Texture.Height) / 2;
+    private float CenterPosX() => (GetScreenWidth() - _texture.Width * _scaleX) / 2;
+    private float CenterPosY() => (GetScreenHeight() - _texture.Height * _scaleY) / 2;
 
     public void ChangeAnimationSpeed(AnimationSpeed newAnimationSpeed)
     {
-        CurrentAnimationSpeed = newAnimationSpeed;
+        _currentAnimationSpeed = newAnimationSpeed;
     }
 
     public void Unload()
     {
-        UnloadTexture(Texture);
+        UnloadTexture(_texture);
     }
 }
