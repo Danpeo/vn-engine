@@ -5,5 +5,4 @@ public enum BackgroundAnimation
     None,
     FadeIn,
     SlideIn,
-    Transition
 }

@@ -17,7 +17,6 @@ public class Background : ITexture
     private bool _animationCompleted;
     private float _scaleX;
     private float _scaleY;
-    private bool _scalePrev;
 
     public Background(string texturePath, BackgroundAnimation animation = BackgroundAnimation.FadeIn,
         AnimationSpeed originalAnimationSpeed = AnimationSpeed.Normal)
@@ -51,11 +50,8 @@ public class Background : ITexture
 
     public void UpdateScale()
     {
-        var prev = Bg.Prev();
-        var texture = _scalePrev && prev != null ? prev.Texture : Texture;
-        Console.WriteLine(texture.Id);
-        _scaleX = (float)GetScreenWidth() / texture.Width;
-        _scaleY = (float)GetScreenHeight() / texture.Height;
+        _scaleX = (float)GetScreenWidth() / Texture.Width;
+        _scaleY = (float)GetScreenHeight() / Texture.Height;
 
         float minScale = Math.Min(_scaleX, _scaleY);
 
@@ -69,14 +65,14 @@ public class Background : ITexture
 
         if (_animationCompleted)
         {
-            DrawWithNoneAnimation(Texture);
+            DrawWithNoneAnimation();
             return;
         }
 
         switch (Animation)
         {
             case BackgroundAnimation.None:
-                DrawWithNoneAnimation(Texture);
+                DrawWithNoneAnimation();
                 break;
             case BackgroundAnimation.FadeIn:
                 DrawWithFadeAnimation();
@@ -84,50 +80,12 @@ public class Background : ITexture
             case BackgroundAnimation.SlideIn:
                 DrawWithSlideAnimation();
                 break;
-            case BackgroundAnimation.Transition:
-                DrawWithTransition();
-                break;
             default:
-                DrawWithNoneAnimation(Texture);
+                DrawWithNoneAnimation();
                 break;
         }
     }
-
-    private void DrawWithTransition()
-    {
-        var prev = Bg.Prev();
-
-        prev.Match(background =>
-            {
-                if (!background._animationCompleted)
-                {
-                    var alphaSpeed = AlphaSpeed();
-
-                    if (background._alpha > 0.0f)
-                    {
-                        background._alpha -= alphaSpeed;
-                        if (background._alpha < 0.0f)
-                        {
-                            background._alpha = 0.0f;
-                            background._animationCompleted = true;
-                        }
-
-                        var fadeColor = new Color(255, 255, 255, (int)(background._alpha * 255));
-                        var pos = CenterPosition(background.Texture); 
-                        DrawTextureEx(background.Texture, pos, 0.0f, _scaleX, fadeColor);
-                        _scalePrev = true;
-                    }
-                }
-                else
-                {
-                    _scalePrev = false;
-                    DrawWithFadeAnimation();
-                }
-            },
-            () => DrawWithFadeAnimation());
-    }
-
-
+    
     public void CompleteAnimation()
     {
         _animationCompleted = true;
@@ -168,9 +126,8 @@ public class Background : ITexture
         DrawTexture(Texture, (int)_slidePosX, (int)_slidePosY, Color.White);
     }
 
-    private void DrawWithFadeAnimation(Texture2D? texture = null)
+    private void DrawWithFadeAnimation()
     {
-        var t = texture ?? Texture;
         var alphaSpeed = AlphaSpeed();
 
         if (_alpha < 1.0f)
@@ -184,8 +141,8 @@ public class Background : ITexture
         }
 
         var fadeColor = new Color(255, 255, 255, (int)(_alpha * 255));
-        var pos = CenterPosition(t);
-        DrawTextureEx(t, pos, 0.0f, _scaleX, fadeColor);
+        var pos = CenterPosition();
+        DrawTextureEx(Texture, pos, 0.0f, _scaleX, fadeColor);
     }
 
     private float AlphaSpeed() =>
@@ -199,17 +156,16 @@ public class Background : ITexture
             _ => 0.03f
         };
 
-    private void DrawWithNoneAnimation(Texture2D? texture = null)
+    private void DrawWithNoneAnimation()
     {
-        var pos = CenterPosition(texture);
-        DrawTextureEx(texture ?? Texture, pos, 0.0f, _scaleX, Color.White);
+        var pos = CenterPosition();
+        DrawTextureEx(Texture, pos, 0.0f, _scaleX, Color.White);
     }
 
-    private Vector2 CenterPosition(Texture2D? texture = null)
+    private Vector2 CenterPosition()
     {
-        var t = texture ?? Texture;
-        float posX = (GetScreenWidth() - t.Width * _scaleX) / 2;
-        float posY = (GetScreenHeight() - t.Height * _scaleY) / 2;
+        float posX = (GetScreenWidth() - Texture.Width * _scaleX) / 2;
+        float posY = (GetScreenHeight() - Texture.Height * _scaleY) / 2;
         return new Vector2(posX, posY);
     }
 

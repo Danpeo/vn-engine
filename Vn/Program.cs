@@ -45,8 +45,8 @@ var dialoguePanel = new DialoguePanel(
     DialoguePanelAnimation.Slide
 );
 
-var bg = new Background(Paths.Bg("bg1.png"), BackgroundAnimation.Transition, AnimationSpeed.VerySlow);
-var bg2 = new Background(Paths.Bg("orig.png"), BackgroundAnimation.Transition, AnimationSpeed.VerySlow);
+var bg = new Background(Paths.Bg("bg1.png"), BackgroundAnimation.SlideIn, AnimationSpeed.Normal);
+var bg2 = new Background(Paths.Bg("orig.png"), BackgroundAnimation.SlideIn, AnimationSpeed.Normal);
 var dv = new Background(Paths.Sprites("dv pioneer normal.png"), BackgroundAnimation.FadeIn, AnimationSpeed.VeryFast);
 
 Bg.SetCurrent(bg);
@@ -90,6 +90,7 @@ while (!WindowShouldClose())
     BeginDrawing();
     ClearBackground(Color.White);
     
+    Bg.DrawPrev();
     Bg.DrawCurrent();
     
     dialoguePanel.Draw();

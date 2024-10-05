@@ -14,6 +14,7 @@ public static class Bg
     }
 
     public static void DrawCurrent() => CurrentBackground?.Draw();
+    public static void DrawPrev() => PreviousBackground?.Draw();
 
     public static Background? Prev() => PreviousBackground;
 }
