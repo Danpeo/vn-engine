@@ -5,7 +5,7 @@ using Vn.Utils;
 using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
 
-InitWindow(800, 600, "Visual Novel");
+InitWindow(1280, 720, "Visual Novel");
 InitAudioDevice();
 SetWindowState(ConfigFlags.ResizableWindow);
 SetTargetFPS(60);
@@ -45,8 +45,9 @@ var dialoguePanel = new DialoguePanel(
     DialoguePanelAnimation.Slide
 );
 
-var bg = new Background(Paths.Bg("bg1.png"), BackgroundAnimation.SlideIn, AnimationSpeed.VerySlow);
-var bg2 = new Background(Paths.Bg("bg2.png"), BackgroundAnimation.FadeIn, AnimationSpeed.VeryFast);
+var bg = new Background(Paths.Bg("bg1.png"), BackgroundAnimation.Transition, AnimationSpeed.VerySlow);
+var bg2 = new Background(Paths.Bg("orig.png"), BackgroundAnimation.Transition, AnimationSpeed.VerySlow);
+var dv = new Background(Paths.Sprites("dv pioneer normal.png"), BackgroundAnimation.FadeIn, AnimationSpeed.VeryFast);
 
 Bg.SetCurrent(bg);
 
@@ -65,9 +66,14 @@ while (!WindowShouldClose())
         {
             currentDialogue = dialogues[++currDialogueInex];
             if (currDialogueInex % 2 == 0)
+            {
+               
                 Bg.SetCurrent(bg);
+            }
             else
+            {
                 Bg.SetCurrent(bg2);
+            }
         }
         else
         {
@@ -85,7 +91,7 @@ while (!WindowShouldClose())
     ClearBackground(Color.White);
     
     Bg.DrawCurrent();
-
+    
     dialoguePanel.Draw();
     dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
