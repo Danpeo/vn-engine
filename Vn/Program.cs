@@ -1,4 +1,5 @@
-﻿using Vn.Constants;
+﻿using System.Numerics;
+using Vn.Constants;
 using Vn.Story;
 using Vn.UI;
 using Vn.Utils;
@@ -6,9 +7,8 @@ using static Raylib_cs.MouseButton;
 using static Raylib_cs.Raylib;
 using Textures = Vn.UI.Textures;
 
-InitWindow(1280, 720, "Visual Novel");
+InitWindow(GameParams.ScreenWidth, GameParams.ScreenHeight, "Visual Novel");
 InitAudioDevice();
-SetWindowState(ConfigFlags.ResizableWindow);
 SetTargetFPS(60);
 
 var naruto = new Character("Нарутыч", new Dictionary<string, string> { ["Naruto"] = "Naruto" }, Color.Orange);
@@ -37,8 +37,8 @@ const int panelPadding = 50;
 
 var dialoguePanel = new DialoguePanel(
     panelPadding,
-    GetScreenHeight() - 200,
-    GetScreenWidth() - 2 * panelPadding,
+    Display.GetHeight() - 200,
+    Display.GetWidth() - 2 * panelPadding,
     150,
     0.15f,
     16,
@@ -48,7 +48,8 @@ var dialoguePanel = new DialoguePanel(
 
 var bg = new Background(Paths.Bg("bg1.png"), ImageAnimation.None, AnimationSpeed.Normal);
 var bg2 = new Background(Paths.Bg("orig.png"), ImageAnimation.Fade, AnimationSpeed.Normal);
-var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.None, AnimationSpeed.VeryFast, PositionOption.Left);
+var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.None, AnimationSpeed.VeryFast,
+    PositionOption.FarRight);
 
 Bg.SetCurrent(bg);
 
@@ -56,8 +57,14 @@ while (!WindowShouldClose())
 {
     float deltaTime = GetFrameTime();
 
+    if (IsKeyPressed(KeyboardKey.F))
+    {
+        Display.ToggleFullscreenWindow(GameParams.ScreenWidth, GameParams.ScreenHeight);
+    }
+
     if (IsMouseButtonPressed(Right))
     {
+        
         dialoguePanel.ToggleVisibility();
     }
 
@@ -68,7 +75,6 @@ while (!WindowShouldClose())
             currentDialogue = dialogues[++currDialogueInex];
             if (currDialogueInex % 2 == 0)
             {
-               
                 Bg.SetCurrent(bg);
             }
             else
@@ -90,12 +96,12 @@ while (!WindowShouldClose())
 
     BeginDrawing();
     ClearBackground(Color.White);
-    
+
     Bg.DrawPrev();
     Bg.DrawCurrent();
-    
+
     dv.Draw();
-    
+
     dialoguePanel.Draw();
     dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
@@ -106,3 +112,4 @@ Fonts.Unload();
 CloseAudioDevice();
 Textures.UnloadAll();
 CloseWindow();
+return;

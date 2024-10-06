@@ -1,5 +1,6 @@
 using System.Numerics;
 using Vn.UI;
+using Vn.Utils;
 using Textures = Vn.UI.Textures;
 
 namespace Vn.Story;
@@ -31,8 +32,8 @@ public class Background : ITexture
 
     private void UpdateScale()
     {
-        _scaleX = (float)GetScreenWidth() / _texture.Width;
-        _scaleY = (float)GetScreenHeight() / _texture.Height;
+        _scaleX = (float)Display.GetWidth() / _texture.Width;
+        _scaleY = (float)Display.GetHeight() / _texture.Height;
 
         float minScale = Math.Min(_scaleX, _scaleY);
 
@@ -43,7 +44,6 @@ public class Background : ITexture
     public void Draw()
     {
         UpdateScale();
-        
         if (_animationCompleted)
         {
             DrawWithNoneAnimation();
@@ -150,8 +150,8 @@ public class Background : ITexture
         return new Vector2(posX, posY);
     }
 
-    private float CenterPosX() => (GetScreenWidth() - _texture.Width * _scaleX) / 2;
-    private float CenterPosY() => (GetScreenHeight() - _texture.Height * _scaleY) / 2;
+    private float CenterPosX() => (Display.GetWidth() - _texture.Width * _scaleX) / 2;
+    private float CenterPosY() => (Display.GetHeight() - _texture.Height * _scaleY) / 2;
 
     public void ChangeAnimationSpeed(AnimationSpeed newAnimationSpeed)
     {
