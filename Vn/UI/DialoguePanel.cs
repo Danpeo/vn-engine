@@ -1,4 +1,5 @@
 using Raylib_cs;
+using Vn.Constants;
 using Vn.Utils;
 using static Raylib_cs.Raylib;
 using static Vn.UI.DialoguePanelAnimation;
@@ -33,7 +34,7 @@ public class DialoguePanel
         Segments = segments;
         Color = color;
         Animation = animation;
-        _slideAnimTargetY = Y;
+        _slideAnimTargetY = Pos.PanelY();
     }
 
 
@@ -44,7 +45,7 @@ public class DialoguePanel
         switch (Animation)
         {
             case Slide:
-                _slideAnimTargetY = _isVisible ? GetScreenHeight() - 200 : 2000.0f;
+                _slideAnimTargetY = _isVisible ? Pos.PanelY() : 2000.0f;
                 break;
             case DialoguePanelAnimation.Fade:
                 _alpha = _isVisible ? 0.0f : 1.0f;
@@ -54,6 +55,8 @@ public class DialoguePanel
 
     public void Update(float deltaTime)
     {
+        _slideAnimTargetY = _isVisible ? Pos.PanelY() : 2000.0f;
+
         switch (Animation)
         {
             case Slide:
@@ -77,11 +80,14 @@ public class DialoguePanel
                     _alpha -= _fadeSpeed * deltaTime;
                     if (_alpha < 0.0f) _alpha = 0.0f;
                 }
+                Y = Display.GetHeight() - MathEx.ValueFromPercent(Display.GetHeight(), 22.5f);
 
                 break;
 
             case None:
                 _alpha = _isVisible ? 1.0f : 0.0f;
+                Y = Display.GetHeight() - MathEx.ValueFromPercent(Display.GetHeight(), 22.5f);
+
                 break;
         }
     }

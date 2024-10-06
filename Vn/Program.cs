@@ -1,10 +1,8 @@
-﻿using System.Numerics;
-using Vn.Constants;
+﻿using Vn.Constants;
 using Vn.Story;
 using Vn.UI;
 using Vn.Utils;
 using static Raylib_cs.MouseButton;
-using static Raylib_cs.Raylib;
 using Textures = Vn.UI.Textures;
 
 InitWindow(GameParams.ScreenWidth, GameParams.ScreenHeight, "Visual Novel");
@@ -35,9 +33,11 @@ var currentDialogue = dialogues[currDialogueInex];
 
 const int panelPadding = 50;
 
+
+
 var dialoguePanel = new DialoguePanel(
     panelPadding,
-    Display.GetHeight() - 200,
+    Pos.PanelY(),
     Display.GetWidth() - 2 * panelPadding,
     150,
     0.15f,
@@ -92,7 +92,8 @@ while (!WindowShouldClose())
     dialoguePanel.Update(deltaTime);
     currentDialogue.Update(deltaTime);
 
-    dialoguePanel.Width = GetScreenWidth() - 2 * panelPadding;
+    dialoguePanel.Width = Display.GetWidth() - 2 * panelPadding;
+    dialoguePanel.Height = Display.GetHeight() / 5;
 
     BeginDrawing();
     ClearBackground(Color.White);
@@ -112,4 +113,3 @@ Fonts.Unload();
 CloseAudioDevice();
 Textures.UnloadAll();
 CloseWindow();
-return;

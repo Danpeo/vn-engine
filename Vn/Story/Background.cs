@@ -7,7 +7,7 @@ namespace Vn.Story;
 
 public class Background : ITexture
 {
-    private readonly Texture2D _texture;
+    private Texture2D _texture;
     private readonly ImageAnimation _animation;
     private readonly AnimationSpeed _originalAnimationSpeed;
     private AnimationSpeed _currentAnimationSpeed;
@@ -30,16 +30,7 @@ public class Background : ITexture
         Textures.Add(this);
     }
 
-    private void UpdateScale()
-    {
-        _scaleX = (float)Display.GetWidth() / _texture.Width;
-        _scaleY = (float)Display.GetHeight() / _texture.Height;
-
-        float minScale = Math.Min(_scaleX, _scaleY);
-
-        _scaleX = minScale;
-        _scaleY = minScale;
-    }
+    private void UpdateScale() => Textures.UpdateScale(ref _texture, out _scaleX, out _scaleY);
 
     public void Draw()
     {

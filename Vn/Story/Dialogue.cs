@@ -83,14 +83,14 @@ public class Dialogue
         const int namePadding = 40;
         var pos = new Vector2(panel.X + padding, panel.Y + namePadding);
 
+        if (!panel.IsFullyVisible()) return;
+        
         Character.IfSome(
             character => DrawTextEx(Fonts.Accent, character.CurrentDisplayName(), new Vector2(panel.X + padding, panel.Y + padding),
                 Fonts.Accent.BaseSize, 2,
                 character.Color)
         );
         
-        if (!panel.IsFullyVisible()) return; 
-
         float maxWidth = panel.Width - 2 * padding; 
         float currentLineWidth = 0;
         
