@@ -6,21 +6,24 @@ namespace Vn.Story;
 
 public class Sprite : ITexture
 {
-    private  Texture2D _texture;
+    public bool Moved { get; private set; }
+    private Texture2D _texture;
     private readonly ImageAnimation _animation;
     private readonly AnimationSpeed _originalAnimationSpeed;
     private AnimationSpeed _currentAnimationSpeed;
     private float _alpha;
-    private float _slidePosX;
     private bool _animationCompleted;
     private float _scaleX;
     private float _scaleY;
     private Vector2 _position;
+    private Vector2? _moveDestination;
     private readonly Vector2 _originalPos;
+    private readonly Vector2? _customPos;
     private readonly PositionOption _positionOption;
 
     public Sprite(string texturePath, ImageAnimation animation = ImageAnimation.Fade,
-        AnimationSpeed originalAnimationSpeed = AnimationSpeed.Normal, PositionOption positionOption = PositionOption.Center, Vector2? customPosition = null)
+        AnimationSpeed originalAnimationSpeed = AnimationSpeed.Normal,
+        PositionOption positionOption = PositionOption.Center, Vector2? customPosition = null)
     {
         _animation = animation;
         _originalAnimationSpeed = originalAnimationSpeed;
@@ -28,10 +31,10 @@ public class Sprite : ITexture
         _positionOption = positionOption;
         Textures.Assign(ref _texture, texturePath);
 
-        _slidePosX = -_texture.Width;
         Textures.Add(this);
 
-        UpdateScale(); 
+        UpdateScale();
+        _customPos = customPosition;
         _position = customPosition ?? GetPosition(_positionOption);
         _originalPos = _position;
     }
@@ -59,12 +62,75 @@ public class Sprite : ITexture
         };
     }
 
-   
     public void Draw()
     {
         UpdateScale();
-        _position = GetPosition(_positionOption, _originalPos); 
-        DrawWithNoneAnimation();
+        if (!_moveDestination.HasValue)
+        {
+            _position = GetPosition(_positionOption, _customPos);
+        }
+
+        switch (_animation)
+        {
+            case ImageAnimation.None:
+                DrawWithNoneAnimation();
+                break;
+            case ImageAnimation.Fade:
+            case ImageAnimation.Slide:
+                DrawWithSlideAnimation();
+                break;
+            default:
+                DrawWithNoneAnimation();
+                break;
+        }
+    }
+
+    private void DrawWithSlideAnimation()
+    {
+        if (!_moveDestination.HasValue)
+        {
+            _position = _position with { X = -_texture.Width * _scaleX };
+            _moveDestination = GetPosition(_positionOption, _customPos);
+        }
+
+        if (Vector2.Distance(_position, _moveDestination.Value) > 0.1f)
+        {
+            Move(_positionOption, _customPos);
+        }
+        else
+        {
+            _moveDestination = null;
+            Moved = true;
+        }
+
+        DrawTextureEx(_texture, _position, 0, _scaleX, Color.White);
+    }
+
+    public void Move(PositionOption positionOption, Vector2? customPos = null)
+    {
+        var speed = _currentAnimationSpeed switch
+        {
+            AnimationSpeed.VerySlow => 3f,
+            AnimationSpeed.Slow => 5f,
+            AnimationSpeed.Normal => 10f,
+            AnimationSpeed.Fast => 15f,
+            AnimationSpeed.VeryFast => 20f,
+            _ => 5f
+        };
+        _moveDestination = GetPosition(positionOption, customPos);
+        if (_moveDestination.HasValue && Vector2.Distance(_position, _moveDestination.Value) > 0.1f)
+        {
+            Moved = false;
+            float step = speed * GetFrameTime();
+            _position = _position.Lerp(_moveDestination.Value, step);
+            _position.X = MathF.Round(_position.X);
+            _position.Y = MathF.Round(_position.Y);
+        }
+        else
+        {
+            _moveDestination = null;
+            Moved = true;
+        }
     }
 
     private void DrawWithNoneAnimation()

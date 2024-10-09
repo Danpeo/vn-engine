@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Vn.Utils;
 
 public static class MathEx
@@ -9,4 +11,10 @@ public static class MathEx
         !AlmostEqual(lhs, rhs, epsilon);
     
     public static float ValueFromPercent(this float value, float percent) => value * percent / 100;
+
+    public static Vector2 Lerp(this Vector2 start, Vector2 end, float t)
+    {
+        t = Math.Clamp(t, 0, 1);
+        return (1 - t) * start + t * end;
+    }
 }

@@ -48,8 +48,8 @@ var dialoguePanel = new DialoguePanel(
 
 var bg = new Background(Paths.Bg("bg1.png"), ImageAnimation.None, AnimationSpeed.Normal);
 var bg2 = new Background(Paths.Bg("orig.png"), ImageAnimation.Fade, AnimationSpeed.Normal);
-var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.None, AnimationSpeed.VeryFast,
-    PositionOption.FarRight);
+var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
+    PositionOption.Center);
 
 Bg.SetCurrent(bg);
 
@@ -100,6 +100,11 @@ while (!WindowShouldClose())
 
     Bg.DrawPrev();
     Bg.DrawCurrent();
+
+    if (IsKeyDown(KeyboardKey.D))
+    {
+        dv.Move(PositionOption.Center);
+    }
 
     dv.Draw();
 
