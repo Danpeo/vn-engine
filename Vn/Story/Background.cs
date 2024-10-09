@@ -75,24 +75,24 @@ public class Background : ITexture
 
     private void DrawWithSlideAnimation()
     {
-        var slideShiftSpeed = _currentAnimationSpeed switch
+        float targetPosX = CenterPosX();
+        float slideShiftSpeed = _currentAnimationSpeed switch
         {
-            AnimationSpeed.VerySlow => 15f,
-            AnimationSpeed.Slow => 30f,
-            AnimationSpeed.Normal => 50f,
-            AnimationSpeed.Fast => 65f,
-            AnimationSpeed.VeryFast => 80f,
-            _ => 50f
+            AnimationSpeed.VerySlow => 3f,
+            AnimationSpeed.Slow => 5f,
+            AnimationSpeed.Normal => 10f,
+            AnimationSpeed.Fast => 15f,
+            AnimationSpeed.VeryFast => 20f,
+            _ => 10f
         };
 
-        if (_slidePosX < CenterPosX())
+        float t = slideShiftSpeed * GetFrameTime();
+        _slidePosX = MathEx.Lerp(_slidePosX, targetPosX, t);
+
+        if (_slidePosX.AlmostEqual(targetPosX)) 
         {
-            _slidePosX += slideShiftSpeed;
-            if (_slidePosX >= CenterPosX())
-            {
-                _slidePosX = CenterPosX();
-                _animationCompleted = true;
-            }
+            _slidePosX = targetPosX;
+            _animationCompleted = true;
         }
 
         DrawTextureEx(_texture, new Vector2(_slidePosX, CenterPosY()), 0.0f, _scaleX, Color.White);
@@ -100,14 +100,22 @@ public class Background : ITexture
 
     private void DrawWithFadeAnimation()
     {
-        var alphaSpeed = AlphaSpeed();
+        const float targetAlpha = 1.0f;
+        float alphaSpeed = AlphaSpeed() * GetFrameTime();
 
-        if (_alpha < 1.0f)
+        if (_alpha < targetAlpha)
         {
-            _alpha += alphaSpeed;
-            if (_alpha > 1.0f)
+            float distanceToTarget = targetAlpha - _alpha;
+            if (distanceToTarget.NearlyZero())
             {
-                _alpha = 1.0f;
+                alphaSpeed *= distanceToTarget / 0.1f; 
+            }
+
+            _alpha += alphaSpeed;
+
+            if (_alpha > targetAlpha)
+            {
+                _alpha = targetAlpha;
                 _animationCompleted = true;
             }
         }
@@ -120,12 +128,12 @@ public class Background : ITexture
     private float AlphaSpeed() =>
         _currentAnimationSpeed switch
         {
-            AnimationSpeed.VerySlow => 0.01f,
-            AnimationSpeed.Slow => 0.02f,
-            AnimationSpeed.Normal => 0.03f,
-            AnimationSpeed.Fast => 0.04f,
-            AnimationSpeed.VeryFast => 0.05f,
-            _ => 0.03f
+            AnimationSpeed.VerySlow => 0.5f,
+            AnimationSpeed.Slow => 1.5f,
+            AnimationSpeed.Normal => 2.5f,
+            AnimationSpeed.Fast => 3.5f,
+            AnimationSpeed.VeryFast => 4f,
+            _ => 2.5f
         };
 
     private void DrawWithNoneAnimation()

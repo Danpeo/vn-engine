@@ -122,7 +122,7 @@ public class Sprite : ITexture
         {
             Moved = false;
             float step = speed * GetFrameTime();
-            _position = _position.Lerp(_moveDestination.Value, step);
+            _position = MathEx.Lerp(_position, _moveDestination.Value, step);
             _position.X = MathF.Round(_position.X);
             _position.Y = MathF.Round(_position.Y);
         }

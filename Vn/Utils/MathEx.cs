@@ -12,7 +12,13 @@ public static class MathEx
     
     public static float ValueFromPercent(this float value, float percent) => value * percent / 100;
 
-    public static Vector2 Lerp(this Vector2 start, Vector2 end, float t)
+    public static float Lerp(float start, float end, float t)
+    {
+        t = Math.Clamp(t, 0, 1);
+        return (1 - t) * start + t * end;
+    }
+
+    public static Vector2 Lerp(Vector2 start, Vector2 end, float t)
     {
         t = Math.Clamp(t, 0, 1);
         return (1 - t) * start + t * end;
