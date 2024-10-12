@@ -7,6 +7,7 @@ namespace Vn.Story;
 
 public class Background : ITexture
 {
+    public string Path { get; }
     private Texture2D _texture;
     private readonly ImageAnimation _animation;
     private readonly AnimationSpeed _originalAnimationSpeed;
@@ -25,6 +26,7 @@ public class Background : ITexture
         _currentAnimationSpeed = originalAnimationSpeed;
       
         Textures.Assign(ref _texture, texturePath);
+        Path = texturePath;
         
         _slidePosX = -_texture.Width;
         Textures.Add(this);
@@ -78,12 +80,12 @@ public class Background : ITexture
         float targetPosX = CenterPosX();
         float slideShiftSpeed = _currentAnimationSpeed switch
         {
-            AnimationSpeed.VerySlow => 3f,
-            AnimationSpeed.Slow => 5f,
-            AnimationSpeed.Normal => 10f,
-            AnimationSpeed.Fast => 15f,
-            AnimationSpeed.VeryFast => 20f,
-            _ => 10f
+            AnimationSpeed.VerySlow => 1f,
+            AnimationSpeed.Slow => 3f,
+            AnimationSpeed.Normal => 6f,
+            AnimationSpeed.Fast => 10f,
+            AnimationSpeed.VeryFast => 15f,
+            _ => 5f
         };
 
         float t = slideShiftSpeed * GetFrameTime();

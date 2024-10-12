@@ -21,7 +21,7 @@ public class Dialogue
     private Sound? _voiceLine;
     private Sound? _soundEffect;
     
-    public Dialogue(string text, float displaySpeed = 0.02f, float alphaSpeed = 0.03f, Character? character = null,
+    public Dialogue(Character? character, string text, float displaySpeed = 0.015f, float alphaSpeed = 0.04f,
         Color? textColor = null, DialogueAudioType audioType = DialogueAudioType.None, Sound? voiceLine = null, Sound? soundEffect = null)
     {
         Text = text;
@@ -33,11 +33,12 @@ public class Dialogue
         _soundEffect = soundEffect;
         TextColor = textColor ?? Color.LightGray;
         Character = character ?? null;
+        Dialogues.Add(this);
     }
 
-    public void Update(float deltaTime)
+    public void Update()
     {
-        _timePassed += deltaTime;
+        _timePassed += GetFrameTime();
         
         if (_charIndex < Text.Length && _timePassed >= _charDisplaySpeed)
         {

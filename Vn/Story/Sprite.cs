@@ -110,11 +110,11 @@ public class Sprite : ITexture
     {
         var speed = _currentAnimationSpeed switch
         {
-            AnimationSpeed.VerySlow => 3f,
-            AnimationSpeed.Slow => 5f,
-            AnimationSpeed.Normal => 10f,
-            AnimationSpeed.Fast => 15f,
-            AnimationSpeed.VeryFast => 20f,
+            AnimationSpeed.VerySlow => 1f,
+            AnimationSpeed.Slow => 3f,
+            AnimationSpeed.Normal => 6f,
+            AnimationSpeed.Fast => 10f,
+            AnimationSpeed.VeryFast => 15f,
             _ => 5f
         };
         _moveDestination = GetPosition(positionOption, customPos);

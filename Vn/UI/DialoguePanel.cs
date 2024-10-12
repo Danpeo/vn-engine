@@ -16,9 +16,9 @@ public class DialoguePanel
     public int Segments { get; set; }
     public Color Color { get; set; }
     public DialoguePanelAnimation Animation { get; set; }
+    public float Alpha { private set; get; } = 1.0f;
 
     private float _slideAnimTargetY;
-    private float _alpha = 1.0f;
     private bool _isVisible = true;
     private float _animationSpeed = 1000.0f;
     private float _fadeSpeed = 2.0f;
@@ -48,12 +48,12 @@ public class DialoguePanel
                 _slideAnimTargetY = _isVisible ? Pos.PanelY() : 2000.0f;
                 break;
             case DialoguePanelAnimation.Fade:
-                _alpha = _isVisible ? 0.0f : 1.0f;
+                Alpha = _isVisible ? 0.0f : 1.0f;
                 break;
         }
     }
 
-    public void Update(float deltaTime)
+    public void Update()
     {
         _slideAnimTargetY = _isVisible ? Pos.PanelY() : 2000.0f;
 
@@ -63,29 +63,29 @@ public class DialoguePanel
                 if (Y.PracticallyNotEqual(_slideAnimTargetY))
                 {
                     Y = _isVisible
-                        ? Math.Max(_slideAnimTargetY, Y - _animationSpeed * deltaTime)
-                        : Math.Min(_slideAnimTargetY, Y + _animationSpeed * deltaTime);
+                        ? Math.Max(_slideAnimTargetY, Y - _animationSpeed * GetFrameTime())
+                        : Math.Min(_slideAnimTargetY, Y + _animationSpeed * GetFrameTime());
                 }
 
                 break;
 
             case DialoguePanelAnimation.Fade:
-                if (_isVisible && _alpha < 1.0f)
+                if (_isVisible && Alpha < 1.0f)
                 {
-                    _alpha += _fadeSpeed * deltaTime;
-                    if (_alpha > 1.0f) _alpha = 1.0f;
+                    Alpha += _fadeSpeed * GetFrameTime();
+                    if (Alpha > 1.0f) Alpha = 1.0f;
                 }
-                else if (!_isVisible && _alpha > 0.0f)
+                else if (!_isVisible && Alpha > 0.0f)
                 {
-                    _alpha -= _fadeSpeed * deltaTime;
-                    if (_alpha < 0.0f) _alpha = 0.0f;
+                    Alpha -= _fadeSpeed * GetFrameTime();
+                    if (Alpha < 0.0f) Alpha = 0.0f;
                 }
                 Y = Display.GetHeight() - MathEx.ValueFromPercent(Display.GetHeight(), 22.5f);
 
                 break;
 
             case None:
-                _alpha = _isVisible ? 1.0f : 0.0f;
+                Alpha = _isVisible ? 1.0f : 0.0f;
                 Y = Display.GetHeight() - MathEx.ValueFromPercent(Display.GetHeight(), 22.5f);
 
                 break;
@@ -103,7 +103,7 @@ public class DialoguePanel
         };
 
         Color panelColor = Animation is DialoguePanelAnimation.Fade or None
-            ? Color with { A = (byte)(_alpha * 255) }
+            ? Color with { A = (byte)(Alpha * 255) }
             : Color;
 
         DrawRectangleRounded(panel, Roundness, Segments, panelColor);
@@ -111,5 +111,5 @@ public class DialoguePanel
 
     public bool IsFullyVisible() =>
         (Animation == Slide && X.AlmostEqual(50)) ||
-        _alpha >= 1.0f;
+        Alpha >= 1.0f;
 }

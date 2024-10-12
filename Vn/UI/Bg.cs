@@ -5,7 +5,7 @@ namespace Vn.UI;
 public static class Bg
 {
     private static Background? PreviousBackground = null;
-    private static Background? CurrentBackground;
+    public static Background? CurrentBackground { get; private set; }
     public static void SetCurrent(Background background)
     {
         PreviousBackground = CurrentBackground;
@@ -15,6 +15,4 @@ public static class Bg
 
     public static void DrawCurrent() => CurrentBackground?.Draw();
     public static void DrawPrev() => PreviousBackground?.Draw();
-
-    public static Background? Prev() => PreviousBackground;
 }

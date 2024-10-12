@@ -6,6 +6,7 @@ using static Raylib_cs.MouseButton;
 using Textures = Vn.UI.Textures;
 
 InitWindow(GameParams.ScreenWidth, GameParams.ScreenHeight, "Visual Novel");
+SetConfigFlags(ConfigFlags.Msaa4xHint);
 InitAudioDevice();
 SetTargetFPS(60);
 
@@ -13,26 +14,25 @@ var naruto = new Character("Нарутыч", new Dictionary<string, string> { ["
 
 var sasuke = new Character("Сасаке");
 
-int currDialogueInex = 0;
+var gs = Saves.LoadGame();
+var currDialogueInex = gs.CurrentDialogueIndex;
 
 var dialogues = new List<Dialogue>
 {
-    new(
-        "САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!САСУКЕ!!!",
-        character: naruto, audioType: DialogueAudioType.SoundEffect,
-        soundEffect: LoadSound("Resources/Audio/voiceSfx.mp3")),
-    new("НАРУТОООО!!!", character: sasuke),
-    new("НЕТ САСУКЕЕЕЕЕЕЕЕ!!!", character: naruto),
-    new("НААААААААРУТО ооооооооооо!!!", character: sasuke),
-    new("ААААААААААААААААГр!!!", character: naruto),
-    new("ЭУУУУУУУУУУУУУУУУУ!!!", character: sasuke),
-    new("ВААУУ!!!"),
+    new(naruto, "fasdfs"),
+    new(naruto, "sdaf sdfav"),
+    new(naruto, "vgh"),
+    new(naruto, "sdffffff"),
+    new(naruto, "cvbcvbcvb"),
+    new(naruto, "zxczxc"),
+    new(naruto, "345"),
+    new(naruto, "nruto"),
+    new(naruto, "fgddg"),
 };
 
 var currentDialogue = dialogues[currDialogueInex];
 
 const int panelPadding = 50;
-
 
 
 var dialoguePanel = new DialoguePanel(
@@ -43,28 +43,43 @@ var dialoguePanel = new DialoguePanel(
     0.15f,
     16,
     Color.DarkGray,
-    DialoguePanelAnimation.Slide
+    DialoguePanelAnimation.Fade
 );
 
-var bg = new Background(Paths.Bg("bg1.png"), ImageAnimation.Fade, AnimationSpeed.Normal);
-var bg2 = new Background(Paths.Bg("orig.png"), ImageAnimation.Fade, AnimationSpeed.Normal);
+var bg = new Background(Paths.Bg("bg1.png"), ImageAnimation.Slide, AnimationSpeed.Normal);
+var bg2 = new Background(Paths.Bg("orig.png"), ImageAnimation.Slide, AnimationSpeed.Normal);
 var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
     PositionOption.Center);
 
-Bg.SetCurrent(bg);
+var bgs = new List<Background>
+{
+    new(Paths.Bg("bg1.png"), ImageAnimation.Slide, AnimationSpeed.Normal),
+    new(Paths.Bg("orig.png"), ImageAnimation.Slide, AnimationSpeed.Normal),
+};
+var currBg = bgs.FirstOrDefault(b => b.Path == gs.CurrentBackgroundPath) ?? bgs.First();
+Bg.SetCurrent(currBg);
+
+var circle = new PulseCircle(circleX(), circleY());
 
 while (!WindowShouldClose())
 {
-    float deltaTime = GetFrameTime();
-
     if (IsKeyPressed(KeyboardKey.F))
     {
         Display.ToggleFullscreenWindow(GameParams.ScreenWidth, GameParams.ScreenHeight);
     }
 
+    if (IsKeyPressed(KeyboardKey.R))
+    {
+        gs.Reset();
+        Saves.SaveGame(gs);
+        currDialogueInex = 0;
+        currentDialogue = dialogues[currDialogueInex];
+        currBg = bgs.First();
+        Bg.SetCurrent(currBg);
+    }
+
     if (IsMouseButtonPressed(Right))
     {
-        
         dialoguePanel.ToggleVisibility();
     }
 
@@ -81,6 +96,9 @@ while (!WindowShouldClose())
             {
                 Bg.SetCurrent(bg2);
             }
+
+            Saves.SaveGame(new GameState
+                { CurrentDialogueIndex = currDialogueInex, CurrentBackgroundPath = Bg.CurrentBackground?.Path });
         }
         else
         {
@@ -89,8 +107,8 @@ while (!WindowShouldClose())
         }
     }
 
-    dialoguePanel.Update(deltaTime);
-    currentDialogue.Update(deltaTime);
+    dialoguePanel.Update();
+    currentDialogue.Update();
 
     dialoguePanel.Width = Display.GetWidth() - 2 * panelPadding;
     dialoguePanel.Height = Display.GetHeight() / 5;
@@ -109,6 +127,8 @@ while (!WindowShouldClose())
     dv.Draw();
 
     dialoguePanel.Draw();
+    circle.Update(circleX(), circleY(), circleAlpha());
+    circle.Draw();
     dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
     EndDrawing();
@@ -118,3 +138,10 @@ Fonts.Unload();
 CloseAudioDevice();
 Textures.UnloadAll();
 CloseWindow();
+return;
+
+int circleY() => (int)(dialoguePanel.Y + dialoguePanel.Height - dialoguePanel.Height.ValueFromPercent(20));
+
+int circleX() => (int)(dialoguePanel.X + dialoguePanel.Width - dialoguePanel.Width.ValueFromPercent(3));
+
+float circleAlpha() => dialoguePanel.Alpha < 1.0f ? 0.0f : dialogues[currDialogueInex].IsFinishedDrawing() ? 1.0f : 0.0f;
