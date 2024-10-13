@@ -10,9 +10,24 @@ SetConfigFlags(ConfigFlags.Msaa4xHint);
 InitAudioDevice();
 SetTargetFPS(60);
 
-var naruto = new Character("Нарутыч", new Dictionary<string, string> { ["Naruto"] = "Naruto" }, Color.Orange);
+var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
+    PositionOption.Center);
+var dv2 = new Sprite(Paths.Sprites("dv pioneer laugh.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
+    PositionOption.Left);
+var dv3 = new Sprite(Paths.Sprites("dv pioneer rage.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
+    PositionOption.Center);
 
-var sasuke = new Character("Сасаке");
+var naruto = new Character("Нарутыч", [])
+{
+    Color = Color.Orange
+};
+
+var sasuke = new Character("Сасаке", new Dictionary<string, Sprite>
+{
+    { "dv", dv },
+    { "dv2", dv2 },
+    { "dv3", dv3 }
+});
 
 var gs = Saves.LoadGame();
 var currDialogueInex = gs.CurrentDialogueIndex;
@@ -48,8 +63,7 @@ var dialoguePanel = new DialoguePanel(
 
 var bg = new Background(Paths.Bg("bg1.png"), ImageAnimation.Slide, AnimationSpeed.Normal);
 var bg2 = new Background(Paths.Bg("orig.png"), ImageAnimation.Slide, AnimationSpeed.Normal);
-var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
-    PositionOption.Center);
+
 
 var bgs = new List<Background>
 {
@@ -60,6 +74,20 @@ var currBg = bgs.FirstOrDefault(b => b.Path == gs.CurrentBackgroundPath) ?? bgs.
 Bg.SetCurrent(currBg);
 
 var circle = new PulseCircle(circleX(), circleY());
+
+var commands = new List<Command>
+{
+    new Command.DrawSprite(dv2),
+    new Command.Act(() => dv2.Move(PositionOption.Right)),
+    new Command.DontDrawSprite(dv2),
+    new Command.Say(new Dialogue(sasuke, "hahaha im fucking sasuke!!!")),
+    new Command.Say(new Dialogue(sasuke, "coooool !!!")),
+    new Command.Say(new Dialogue(sasuke, "wwwow  fjsdkfjs")),
+    new Command.Bg(new Background(Paths.Bg("bg3.png"), ImageAnimation.Slide, AnimationSpeed.Normal))
+};
+
+var currentCommandIndex = 0;
+var currenetCommand = commands[currentCommandIndex];
 
 while (!WindowShouldClose())
 {
@@ -83,7 +111,7 @@ while (!WindowShouldClose())
         dialoguePanel.ToggleVisibility();
     }
 
-    if (IsMouseButtonPressed(Left))
+    /*if (IsMouseButtonPressed(Left))
     {
         if (currDialogueInex < dialogues.Count - 1 && currentDialogue.IsFinishedDrawing())
         {
@@ -105,10 +133,15 @@ while (!WindowShouldClose())
             currentDialogue.Skip();
             bg.CompleteAnimation();
         }
-    }
+    }*/
+
 
     dialoguePanel.Update();
+    /*
     currentDialogue.Update();
+    */
+    Dialogues.CurDialogue?.Update();
+
 
     dialoguePanel.Width = Display.GetWidth() - 2 * panelPadding;
     dialoguePanel.Height = Display.GetHeight() / 5;
@@ -126,10 +159,19 @@ while (!WindowShouldClose())
 
     dv.Draw();
 
+    Sprites.DrawSprites();
+    Commands.Execute(currenetCommand);
+
     dialoguePanel.Draw();
     circle.Update(circleX(), circleY(), circleAlpha());
     circle.Draw();
-    dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
+    Dialogues.CurDialogue?.Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
+    //dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
+
+    if (IsKeyPressed(KeyboardKey.Space))
+    {
+        currenetCommand = commands[++currentCommandIndex];
+    }
 
     EndDrawing();
 }
@@ -144,4 +186,5 @@ int circleY() => (int)(dialoguePanel.Y + dialoguePanel.Height - dialoguePanel.He
 
 int circleX() => (int)(dialoguePanel.X + dialoguePanel.Width - dialoguePanel.Width.ValueFromPercent(3));
 
-float circleAlpha() => dialoguePanel.Alpha < 1.0f ? 0.0f : dialogues[currDialogueInex].IsFinishedDrawing() ? 1.0f : 0.0f;
+float circleAlpha() =>
+    dialoguePanel.Alpha < 1.0f ? 0.0f : dialogues[currDialogueInex].IsFinishedDrawing() ? 1.0f : 0.0f;

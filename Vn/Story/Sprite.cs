@@ -19,7 +19,7 @@ public class Sprite : ITexture
     private Vector2? _moveDestination;
     private readonly Vector2 _originalPos;
     private readonly Vector2? _customPos;
-    private readonly PositionOption _positionOption;
+    public PositionOption PositionOption { get; set; }
 
     public Sprite(string texturePath, ImageAnimation animation = ImageAnimation.Fade,
         AnimationSpeed originalAnimationSpeed = AnimationSpeed.Normal,
@@ -28,14 +28,14 @@ public class Sprite : ITexture
         _animation = animation;
         _originalAnimationSpeed = originalAnimationSpeed;
         _currentAnimationSpeed = originalAnimationSpeed;
-        _positionOption = positionOption;
+        PositionOption = positionOption;
         Textures.Assign(ref _texture, texturePath);
 
         Textures.Add(this);
 
         UpdateScale();
         _customPos = customPosition;
-        _position = customPosition ?? GetPosition(_positionOption);
+        _position = customPosition ?? GetPosition(PositionOption);
         _originalPos = _position;
     }
 
@@ -67,7 +67,7 @@ public class Sprite : ITexture
         UpdateScale();
         if (!_moveDestination.HasValue)
         {
-            _position = GetPosition(_positionOption, _customPos);
+            _position = GetPosition(PositionOption, _customPos);
         }
 
         switch (_animation)
@@ -90,12 +90,12 @@ public class Sprite : ITexture
         if (!_moveDestination.HasValue)
         {
             _position = _position with { X = -_texture.Width * _scaleX };
-            _moveDestination = GetPosition(_positionOption, _customPos);
+            _moveDestination = GetPosition(PositionOption, _customPos);
         }
 
         if (Vector2.Distance(_position, _moveDestination.Value) > 0.1f)
         {
-            Move(_positionOption, _customPos);
+            Move(PositionOption, _customPos);
         }
         else
         {

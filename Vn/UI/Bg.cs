@@ -8,6 +8,8 @@ public static class Bg
     public static Background? CurrentBackground { get; private set; }
     public static void SetCurrent(Background background)
     {
+        if (CurrentBackground == background) return;
+        
         PreviousBackground = CurrentBackground;
         background.Reset();
         CurrentBackground = background;
