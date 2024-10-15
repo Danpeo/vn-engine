@@ -151,8 +151,8 @@ public class Background : ITexture
         return new Vector2(posX, posY);
     }
 
-    private float CenterPosX() => (Display.GetWidth() - _texture.Width * _scaleX) / 2;
-    private float CenterPosY() => (Display.GetHeight() - _texture.Height * _scaleY) / 2;
+    private float CenterPosX() => (Display.Width() - _texture.Width * _scaleX) / 2;
+    private float CenterPosY() => (Display.Height() - _texture.Height * _scaleY) / 2;
 
     public void ChangeAnimationSpeed(AnimationSpeed newAnimationSpeed)
     {

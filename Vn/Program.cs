@@ -1,4 +1,5 @@
-﻿using Vn.Constants;
+﻿using System.Numerics;
+using Vn.Constants;
 using Vn.Story;
 using Vn.UI;
 using Vn.Utils;
@@ -53,7 +54,7 @@ const int panelPadding = 50;
 var dialoguePanel = new DialoguePanel(
     panelPadding,
     Pos.PanelY(),
-    Display.GetWidth() - 2 * panelPadding,
+    Display.Width() - 2 * panelPadding,
     150,
     0.15f,
     16,
@@ -79,6 +80,8 @@ var commands = new List<Command>
 {
     new Command.DrawSprite(dv2),
     new Command.Act(() => dv2.Move(PositionOption.Right)),
+    new Command.DrawSprite(dv3),
+    new Command.Act(() => dv3.Move(PositionOption.Center)),
     new Command.DontDrawSprite(dv2),
     new Command.Say(new Dialogue(sasuke, "hahaha im fucking sasuke!!!")),
     new Command.Say(new Dialogue(sasuke, "coooool !!!")),
@@ -88,6 +91,8 @@ var commands = new List<Command>
 
 var currentCommandIndex = 0;
 var currenetCommand = commands[currentCommandIndex];
+
+var mm = new MainMenu(new Background(Paths.Bg("bg3.png")), "Аниме крута так то!!");
 
 while (!WindowShouldClose())
 {
@@ -143,12 +148,15 @@ while (!WindowShouldClose())
     Dialogues.CurDialogue?.Update();
 
 
-    dialoguePanel.Width = Display.GetWidth() - 2 * panelPadding;
-    dialoguePanel.Height = Display.GetHeight() / 5;
+    dialoguePanel.Width = Display.Width() - 2 * panelPadding;
+    dialoguePanel.Height = Display.Height() / 5;
 
     BeginDrawing();
     ClearBackground(Color.White);
 
+    mm.Draw();
+    
+    /*
     Bg.DrawPrev();
     Bg.DrawCurrent();
 
@@ -172,6 +180,7 @@ while (!WindowShouldClose())
     {
         currenetCommand = commands[++currentCommandIndex];
     }
+    */
 
     EndDrawing();
 }

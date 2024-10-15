@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Vn.Utils;
 
 public static class Display
@@ -17,7 +19,7 @@ public static class Display
         }
     }
 
-    public static int GetWidth()
+    public static int Width()
     {
         if (IsWindowFullscreen())
         {
@@ -28,7 +30,7 @@ public static class Display
         return GetScreenWidth();
     }
     
-    public static int GetHeight()
+    public static int Height()
     {
         if (IsWindowFullscreen())
         {

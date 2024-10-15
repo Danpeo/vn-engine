@@ -41,8 +41,8 @@ public class Sprite : ITexture
 
     private Vector2 GetPosition(PositionOption positionOption, Vector2? customPosition = null)
     {
-        int screenWidth = Display.GetWidth();
-        int screenHeight = Display.GetHeight();
+        int screenWidth = Display.Width();
+        int screenHeight = Display.Height();
 
         if (customPosition != null)
         {

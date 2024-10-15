@@ -80,13 +80,13 @@ public class DialoguePanel
                     Alpha -= _fadeSpeed * GetFrameTime();
                     if (Alpha < 0.0f) Alpha = 0.0f;
                 }
-                Y = Display.GetHeight() - MathEx.ValueFromPercent(Display.GetHeight(), 22.5f);
+                Y = Display.Height() - MathEx.ValueFromPercent(Display.Height(), 22.5f);
 
                 break;
 
             case None:
                 Alpha = _isVisible ? 1.0f : 0.0f;
-                Y = Display.GetHeight() - MathEx.ValueFromPercent(Display.GetHeight(), 22.5f);
+                Y = Display.Height() - MathEx.ValueFromPercent(Display.Height(), 22.5f);
 
                 break;
         }

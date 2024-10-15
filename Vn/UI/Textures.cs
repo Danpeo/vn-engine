@@ -43,8 +43,8 @@ public static class Textures
 
     public static void UpdateScale(ref Texture2D texture, out float scaleX, out float scaleY)
     { 
-        scaleX = (float)Display.GetWidth() / texture.Width;
-        scaleY = (float)Display.GetHeight() / texture.Height;
+        scaleX = (float)Display.Width() / texture.Width;
+        scaleY = (float)Display.Height() / texture.Height;
 
         float minScale = Math.Min(scaleX, scaleY);
 
