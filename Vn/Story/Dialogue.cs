@@ -87,8 +87,8 @@ public class Dialogue
         if (!panel.IsFullyVisible()) return;
         
         Character.IfSome(
-            character => DrawTextEx(Fonts.Accent, character.CurrentDisplayName(), new Vector2(panel.X + padding, panel.Y + padding),
-                Fonts.Accent.BaseSize, 2,
+            character => DrawTextEx(Fonts.Accent(), character.CurrentDisplayName(), new Vector2(panel.X + padding, panel.Y + padding),
+                Fonts.Accent().BaseSize, 2,
                 character.Color)
         );
         

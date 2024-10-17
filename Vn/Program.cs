@@ -92,7 +92,7 @@ var commands = new List<Command>
 var currentCommandIndex = 0;
 var currenetCommand = commands[currentCommandIndex];
 
-var mm = new MainMenu(new Background(Paths.Bg("bg3.png")), "Аниме крута так то!!");
+var mm = new MainMenu(new Background(Paths.Bg("bg3.png")), "Аниме крута так то!!", Fonts.ArimoBold(70));
 
 while (!WindowShouldClose())
 {
