@@ -17,6 +17,7 @@ public class MainMenu
     public readonly Font _font;
     private readonly Button _startButton = null!;
     private readonly Button _exitButton = null!;
+    private readonly YesNoModal _modal;
 
     public MainMenu(Background background, string title, Font font)
     {
@@ -24,13 +25,18 @@ public class MainMenu
         _title = title;
         _font = font;
 
-        _startButton = new Button("Start", () => { })
+        _modal = new YesNoModal("sfd", () => Environment.Exit(0));
+        
+        _startButton = new Button("Start", () => { Console.WriteLine("START"); })
         {
-            Font = Fonts.ArimoBold(55)
+            Font = Fonts.ArimoBold(55),
         };
-        _exitButton = new Button("Exit", () => { })
+        _exitButton = new Button("Exit", () =>
         {
-            Font = Fonts.ArimoBold(55)
+           _modal.Show();
+        })
+        {
+            Font = Fonts.ArimoBold(55),
         };
     }
 
@@ -57,13 +63,14 @@ public class MainMenu
                 break;
         }
         
-        var ts = MeasureTextEx(_startButton.Font, _startButton.Text, _startButton.Font.BaseSize, 0);
+        var ts = MeasureTextEx(_startButton.Font, _startButton.Title, _startButton.Font.BaseSize, 0);
         var tp = Text.CenterPosition(ts, 0, 0);
         
-        _startButton.Draw(tp);
+        _startButton.Draw(tp, ts);
         
-        var ts2 = MeasureTextEx(_exitButton.Font, _exitButton.Text, _exitButton.Font.BaseSize, 0);
+        var ts2 = MeasureTextEx(_exitButton.Font, _exitButton.Title, _exitButton.Font.BaseSize, 0);
         var tp2 = Text.CenterPosition(ts2, 0, 15);
-        _exitButton.Draw(tp2);
+        _exitButton.Draw(tp2, ts);
+        _modal.Draw();
     }
 }
