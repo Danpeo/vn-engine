@@ -15,29 +15,37 @@ public class YesNoModal
     private Button _noButton;
     private readonly Action _onYes;
     private readonly Action? _onNo;
-    
+
     public YesNoModal(string message, Action onYes, Action? onNo = null)
     {
         _message = message;
         _onYes = onYes;
         _onNo = onNo;
-        
+
         _yesButton = new Button(YesText, () =>
         {
-            _onYes.Invoke();
+            if (UILayers.Current == UILayer.YesNoModal)
+                _onYes.Invoke();
         });
 
         _noButton = new Button(NoText, () =>
         {
-            _onNo?.Invoke();
-            IsVisible = false;
+            if (UILayers.Current == UILayer.YesNoModal)
+            {
+                _onNo?.Invoke();
+                IsVisible = false;
+            }
         });
     }
-    
-    public void Show() => IsVisible = true;
-    
+
+    public void Show()
+    {
+        IsVisible = true;
+        UILayers.Current = UILayer.YesNoModal;
+    }
+
     public void ToggleVisibility() => IsVisible = !IsVisible;
-    
+
     public void Draw()
     {
         if (!IsVisible) return;

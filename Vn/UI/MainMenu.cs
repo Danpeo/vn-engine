@@ -25,16 +25,21 @@ public class MainMenu
         _title = title;
         _font = font;
 
-        _modal = new YesNoModal("sfd", () => Environment.Exit(0));
-        
-        _startButton = new Button("Start", () => { Console.WriteLine("START"); })
+        _modal = new YesNoModal("sfd", () =>
+        {
+            if (UILayers.Current == UILayer.MainMenu)
+                Environment.Exit(0);
+        }, () => UILayers.Current = UILayer.MainMenu);
+
+        _startButton = new Button("Start", () =>
+        {
+            if (UILayers.Current == UILayer.MainMenu)
+                Console.WriteLine("START");
+        })
         {
             Font = Fonts.ArimoBold(55),
         };
-        _exitButton = new Button("Exit", () =>
-        {
-           _modal.Show();
-        })
+        _exitButton = new Button("Exit", () => { _modal.Show(); })
         {
             Font = Fonts.ArimoBold(55),
         };
@@ -53,7 +58,8 @@ public class MainMenu
                 DrawTextEx(_font, _title, textPos, _font.BaseSize, 0, TitleColor);
                 break;
             case OutlineStyle.Solid:
-                Text.DrawWithOutline(_font, _title, textPos, _font.BaseSize, 0, TitleColor, OutlineColor, OutlineThickness);
+                Text.DrawWithOutline(_font, _title, textPos, _font.BaseSize, 0, TitleColor, OutlineColor,
+                    OutlineThickness);
                 break;
             case OutlineStyle.Shadow:
                 Text.DrawWithShadow(_font, _title, textPos, _font.BaseSize, 0, TitleColor, OutlineColor, ShadowOffset);
@@ -62,12 +68,12 @@ public class MainMenu
                 DrawTextEx(_font, _title, textPos, _font.BaseSize, 0, TitleColor);
                 break;
         }
-        
+
         var ts = MeasureTextEx(_startButton.Font, _startButton.Title, _startButton.Font.BaseSize, 0);
         var tp = Text.CenterPosition(ts, 0, 0);
-        
+
         _startButton.Draw(tp, ts);
-        
+
         var ts2 = MeasureTextEx(_exitButton.Font, _exitButton.Title, _exitButton.Font.BaseSize, 0);
         var tp2 = Text.CenterPosition(ts2, 0, 15);
         _exitButton.Draw(tp2, ts);
