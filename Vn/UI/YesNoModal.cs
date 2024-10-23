@@ -41,7 +41,7 @@ public class YesNoModal
     public void Show()
     {
         IsVisible = true;
-        UILayers.Current = UILayer.YesNoModal;
+        UILayers.Set(UILayer.YesNoModal);
     }
 
     public void ToggleVisibility() => IsVisible = !IsVisible;

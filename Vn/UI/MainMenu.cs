@@ -1,6 +1,7 @@
 using System.Numerics;
 using Vn.Constants;
 using Vn.Story;
+using Vn.TheGame;
 using Vn.Utils;
 
 namespace Vn.UI;
@@ -25,16 +26,12 @@ public class MainMenu
         _title = title;
         _font = font;
 
-        _modal = new YesNoModal("sfd", () =>
-        {
-            if (UILayers.Current == UILayer.MainMenu)
-                Environment.Exit(0);
-        }, () => UILayers.Current = UILayer.MainMenu);
+        _modal = new YesNoModal("sfd", () => { Environment.Exit(0); }, () => UILayers.Set(UILayer.MainMenu));
 
         _startButton = new Button("Start", () =>
         {
             if (UILayers.Current == UILayer.MainMenu)
-                Console.WriteLine("START");
+                Scenes.Current = Scene.Game;
         })
         {
             Font = Fonts.ArimoBold(55),

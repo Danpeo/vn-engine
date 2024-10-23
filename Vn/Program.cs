@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Vn.Constants;
 using Vn.Story;
+using Vn.TheGame;
 using Vn.UI;
 using Vn.Utils;
 using static Raylib_cs.MouseButton;
@@ -92,7 +93,39 @@ var commands = new List<Command>
 var currentCommandIndex = 0;
 var currenetCommand = commands[currentCommandIndex];
 
-var mm = new MainMenu(new Background(Paths.Bg("bg3.png")), "Аниме крута так то!!", Fonts.ArimoBold(70));
+var exitModal = new YesNoModal("Выйти из игры?", () =>
+{
+    if (UILayers.Current == UILayer.YesNoModal)
+        Environment.Exit(0);
+}, () => UILayers.Set(UILayer.Game));
+
+var mainMenu = new MainMenu(new Background(Paths.Bg("bg3.png")), "Аниме крута так то!!", Fonts.ArimoBold(70));
+var panel = new ButtonPanel([
+    new("SKIP", () => Console.WriteLine("Skip clicked"))
+    {
+        Font = Fonts.Main()
+    },
+    new("AUTO", () => Console.WriteLine("Auto clicked"))
+    {
+        Font = Fonts.Main()
+    },
+    new("SAVE", () => Console.WriteLine("Save clicked"))
+    {
+        Font = Fonts.Main()
+    },
+    new("LOAD", () => Console.WriteLine("Load clicked"))
+    {
+        Font = Fonts.Main()
+    },
+    new("CONFIG", () => Console.WriteLine("Config clicked"))
+    {
+        Font = Fonts.Main()
+    },
+    new("EXIT", () => exitModal.Show())
+    {
+        Font = Fonts.Main(),
+    }
+]);
 
 while (!WindowShouldClose())
 {
@@ -154,8 +187,44 @@ while (!WindowShouldClose())
     BeginDrawing();
     ClearBackground(Color.White);
 
-    mm.Draw();
-    
+    switch (Scenes.Current)
+    {
+        case Scene.MainMenu:
+            mainMenu.Draw();
+            break;
+        case Scene.Game:
+            
+            Bg.DrawPrev();
+            Bg.DrawCurrent();
+
+            if (IsKeyDown(KeyboardKey.D))
+            {
+                dv.Move(PositionOption.Center);
+            }
+
+            dv.Draw();
+
+            Sprites.DrawSprites();
+            Commands.Execute(currenetCommand);
+
+            dialoguePanel.Draw();
+            circle.Update(circleX(), circleY(), circleAlpha());
+            circle.Draw();
+            Dialogues.CurDialogue?.Draw(dialoguePanel, Fonts.Main(), Fonts.Main().BaseSize, 2);
+            //dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
+
+            if (IsKeyPressed(KeyboardKey.Space))
+            {
+                currenetCommand = commands[++currentCommandIndex];
+            }
+
+            panel.Draw();
+            exitModal.Draw();
+            break;
+        default:
+            throw new ArgumentOutOfRangeException();
+    }
+
     /*
     Bg.DrawPrev();
     Bg.DrawCurrent();
