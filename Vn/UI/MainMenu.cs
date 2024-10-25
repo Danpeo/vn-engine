@@ -3,6 +3,7 @@ using Vn.Constants;
 using Vn.Story;
 using Vn.TheGame;
 using Vn.Utils;
+using static Vn.Loclization.Loc;
 
 namespace Vn.UI;
 
@@ -16,8 +17,9 @@ public class MainMenu
     private readonly Background _background;
     private readonly string _title;
     public readonly Font _font;
-    private readonly Button _startButton = null!;
-    private readonly Button _exitButton = null!;
+    private readonly Button _startButton;
+    private readonly Button _exitButton;
+    private readonly Button _loadGameButton;
     private readonly YesNoModal _modal;
 
     public MainMenu(Background background, string title, Font font)
@@ -28,15 +30,23 @@ public class MainMenu
 
         _modal = new YesNoModal("sfd", () => { Environment.Exit(0); }, () => UILayers.Set(UILayer.MainMenu));
 
-        _startButton = new Button("Start", () =>
+        _startButton = new Button(L("Начать игру"), () =>
         {
             if (UILayers.Current == UILayer.MainMenu)
-                Scenes.Current = Scene.Game;
+                Scenes.Set(Scene.Game);
         })
         {
             Font = Fonts.ArimoBold(55),
         };
-        _exitButton = new Button("Exit", () => { _modal.Show(); })
+        _loadGameButton = new Button(L("Загрузить игру"), () =>
+        {
+            if (UILayers.Current == UILayer.MainMenu)
+                Scenes.Set(Scene.LoadMenu);
+        })
+        {
+            Font = Fonts.ArimoBold(55)
+        };
+        _exitButton = new Button(L("Выйти"), () => { _modal.Show(); })
         {
             Font = Fonts.ArimoBold(55),
         };
@@ -66,14 +76,19 @@ public class MainMenu
                 break;
         }
 
-        var ts = MeasureTextEx(_startButton.Font, _startButton.Title, _startButton.Font.BaseSize, 0);
-        var tp = Text.CenterPosition(ts, 0, 0);
+        var startBtnSize = MeasureTextEx(_startButton.Font, _startButton.Title, _startButton.Font.BaseSize, 0);
+        var startBtnPos = Text.CenterPosition(startBtnSize, 0, 0);
 
-        _startButton.Draw(tp, ts);
+        _startButton.Draw(startBtnPos, startBtnSize);
+        
+        var loadBtnSize = MeasureTextEx(_loadGameButton.Font, _loadGameButton.Title, _loadGameButton.Font.BaseSize, 0);
+        var loadBtnPos = Text.CenterPosition(loadBtnSize, 0, 15);
 
-        var ts2 = MeasureTextEx(_exitButton.Font, _exitButton.Title, _exitButton.Font.BaseSize, 0);
-        var tp2 = Text.CenterPosition(ts2, 0, 15);
-        _exitButton.Draw(tp2, ts);
+        _loadGameButton.Draw(loadBtnPos, loadBtnSize);
+        
+        var exitBtnSize = MeasureTextEx(_exitButton.Font, _exitButton.Title, _exitButton.Font.BaseSize, 0);
+        var exitBtnPos = Text.CenterPosition(exitBtnSize, 0, 30);
+        _exitButton.Draw(exitBtnPos, startBtnSize);
         _modal.Draw();
     }
 }

@@ -19,7 +19,7 @@ public static class Fonts
     private static readonly int[] Codepoints = GetCodepoints();
     public static Font Main(int fontSize = 22)
     {
-        if (MainFont.Texture.Id == 0) // Проверка, загружен ли шрифт
+        if (MainFont.Texture.Id == 0 || MainFont.BaseSize != fontSize)
         {
             MainFont = LoadFontEx(Paths.Fonts("FiraSans-Regular.ttf"), fontSize, Codepoints, 512);
         }
@@ -28,7 +28,7 @@ public static class Fonts
 
     public static Font Accent(int fontSize = 22)
     {
-        if (AccentFont.Texture.Id == 0)
+        if (AccentFont.Texture.Id == 0 || AccentFont.BaseSize != fontSize)
         {
             AccentFont = LoadFontEx(Paths.Fonts("FiraSans-Bold.ttf"), fontSize, Codepoints, 512);
         }
@@ -37,7 +37,7 @@ public static class Fonts
 
     public static Font ArimoBold(int fontSize = 22)
     {
-        if (ArimoBoldFont.Texture.Id == 0)
+        if (ArimoBoldFont.Texture.Id == 0 || ArimoBoldFont.BaseSize != fontSize)
         {
             ArimoBoldFont = LoadFontEx(Paths.Fonts("Arimo-Bold.ttf"), fontSize, Codepoints, 512);
         }

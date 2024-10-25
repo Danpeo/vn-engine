@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Vn.Constants;
+using Vn.Loclization;
 using Vn.Story;
 using Vn.TheGame;
 using Vn.UI;
@@ -11,7 +12,8 @@ InitWindow(GameParams.ScreenWidth, GameParams.ScreenHeight, "Visual Novel");
 SetConfigFlags(ConfigFlags.Msaa4xHint);
 InitAudioDevice();
 SetTargetFPS(60);
-
+Loc.Set(Locale.Ru);
+Loc.LoadTranslation(Paths.Loc("loc.json"));
 var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
     PositionOption.Center);
 var dv2 = new Sprite(Paths.Sprites("dv pioneer laugh.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
@@ -31,7 +33,7 @@ var sasuke = new Character("Сасаке", new Dictionary<string, Sprite>
     { "dv3", dv3 }
 });
 
-var gs = Saves.LoadGame();
+var gs = Saves.LoadGame(1);
 var currDialogueInex = gs.CurrentDialogueIndex;
 
 var dialogues = new List<Dialogue>
@@ -99,7 +101,8 @@ var exitModal = new YesNoModal("Выйти из игры?", () =>
         Environment.Exit(0);
 }, () => UILayers.Set(UILayer.Game));
 
-var mainMenu = new MainMenu(new Background(Paths.Bg("bg3.png")), "Аниме крута так то!!", Fonts.ArimoBold(70));
+var menuBg = new Background(Paths.Bg("bg3.png"));
+var mainMenu = new MainMenu(menuBg, "Аниме крута так то!!", Fonts.ArimoBold(70));
 var panel = new ButtonPanel([
     new("SKIP", () => Console.WriteLine("Skip clicked"))
     {
@@ -126,6 +129,7 @@ var panel = new ButtonPanel([
         Font = Fonts.Main(),
     }
 ]);
+var saveMenu = new SaveMenu(gs, menuBg, Fonts.ArimoBold(50));
 
 while (!WindowShouldClose())
 {
@@ -193,7 +197,7 @@ while (!WindowShouldClose())
             mainMenu.Draw();
             break;
         case Scene.Game:
-            
+
             Bg.DrawPrev();
             Bg.DrawCurrent();
 
@@ -220,6 +224,9 @@ while (!WindowShouldClose())
 
             panel.Draw();
             exitModal.Draw();
+            break;
+        case Scene.LoadMenu:
+            saveMenu.Draw();
             break;
         default:
             throw new ArgumentOutOfRangeException();

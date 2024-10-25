@@ -10,14 +10,14 @@
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Raylib-cs" Version="6.1.1"/>
-        <Content Include="Resources\**\*.*">
+        <Content Include="Resources/**/*.*">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <PackageReference Include="SkiaSharp" Version="2.88.8" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Resources\Sprites\" />
+      <Folder Include="Resources/Sprites/" />
     </ItemGroup>
 
 </Project>
