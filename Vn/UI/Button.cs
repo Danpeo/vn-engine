@@ -1,6 +1,7 @@
 using System.Numerics;
 using Vn.Constants;
 using Vn.Utils;
+using static Vn.Loclization.Loc;
 
 namespace Vn.UI;
 
@@ -60,17 +61,17 @@ public class Button
         switch (OutlineStyle)
         {
             case OutlineStyle.None:
-                DrawTextEx(Font, Title, position, Font.BaseSize, 0, clr);
+                DrawTextEx(Font, L(Title), position, Font.BaseSize, 0, clr);
                 break;
             case OutlineStyle.Solid:
-                Text.DrawWithOutline(Font, Title, position, Font.BaseSize, 0, clr, OutlineColor,
+                Text.DrawWithOutline(Font, L(Title), position, Font.BaseSize, 0, clr, OutlineColor,
                     OutlineThickness);
                 break;
             case OutlineStyle.Shadow:
-                Text.DrawWithShadow(Font, Title, position, Font.BaseSize, 0, clr, OutlineColor, ShadowOffset);
+                Text.DrawWithShadow(Font, L(Title), position, Font.BaseSize, 0, clr, OutlineColor, ShadowOffset);
                 break;
             default:
-                DrawTextEx(Font, Title, position, Font.BaseSize, 0, clr);
+                DrawTextEx(Font, L(Title), position, Font.BaseSize, 0, clr);
                 break;
         }
     }

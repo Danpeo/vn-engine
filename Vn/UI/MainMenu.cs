@@ -1,5 +1,6 @@
 using System.Numerics;
 using Vn.Constants;
+using Vn.Loclization;
 using Vn.Story;
 using Vn.TheGame;
 using Vn.Utils;
@@ -21,6 +22,7 @@ public class MainMenu
     private readonly Button _exitButton;
     private readonly Button _loadGameButton;
     private readonly YesNoModal _modal;
+    private readonly LanguageSelection _languageSelection = new();
 
     public MainMenu(Background background, string title, Font font)
     {
@@ -30,7 +32,7 @@ public class MainMenu
 
         _modal = new YesNoModal("sfd", () => { Environment.Exit(0); }, () => UILayers.Set(UILayer.MainMenu));
 
-        _startButton = new Button(L("Начать игру"), () =>
+        _startButton = new Button("Начать игру", () =>
         {
             if (UILayers.Current == UILayer.MainMenu)
                 Scenes.Set(Scene.Game);
@@ -38,7 +40,7 @@ public class MainMenu
         {
             Font = Fonts.ArimoBold(55),
         };
-        _loadGameButton = new Button(L("Загрузить игру"), () =>
+        _loadGameButton = new Button("Загрузить игру", () =>
         {
             if (UILayers.Current == UILayer.MainMenu)
                 Scenes.Set(Scene.LoadMenu);
@@ -46,7 +48,7 @@ public class MainMenu
         {
             Font = Fonts.ArimoBold(55)
         };
-        _exitButton = new Button(L("Выйти"), () => { _modal.Show(); })
+        _exitButton = new Button("Выйти", () => { _modal.Show(); })
         {
             Font = Fonts.ArimoBold(55),
         };
@@ -76,19 +78,21 @@ public class MainMenu
                 break;
         }
 
-        var startBtnSize = MeasureTextEx(_startButton.Font, _startButton.Title, _startButton.Font.BaseSize, 0);
+        var startBtnSize = MeasureTextEx(_startButton.Font, L(_startButton.Title), _startButton.Font.BaseSize, 0);
         var startBtnPos = Text.CenterPosition(startBtnSize, 0, 0);
 
         _startButton.Draw(startBtnPos, startBtnSize);
-        
-        var loadBtnSize = MeasureTextEx(_loadGameButton.Font, _loadGameButton.Title, _loadGameButton.Font.BaseSize, 0);
+
+        var loadBtnSize = MeasureTextEx(_loadGameButton.Font, L(_loadGameButton.Title), _loadGameButton.Font.BaseSize, 0);
         var loadBtnPos = Text.CenterPosition(loadBtnSize, 0, 15);
 
         _loadGameButton.Draw(loadBtnPos, loadBtnSize);
-        
-        var exitBtnSize = MeasureTextEx(_exitButton.Font, _exitButton.Title, _exitButton.Font.BaseSize, 0);
+
+        var exitBtnSize = MeasureTextEx(_exitButton.Font, L(_exitButton.Title), _exitButton.Font.BaseSize, 0);
         var exitBtnPos = Text.CenterPosition(exitBtnSize, 0, 30);
         _exitButton.Draw(exitBtnPos, startBtnSize);
         _modal.Draw();
+
+        _languageSelection.Draw();
     }
 }

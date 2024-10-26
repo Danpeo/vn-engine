@@ -12,7 +12,7 @@ InitWindow(GameParams.ScreenWidth, GameParams.ScreenHeight, "Visual Novel");
 SetConfigFlags(ConfigFlags.Msaa4xHint);
 InitAudioDevice();
 SetTargetFPS(60);
-Loc.Set(Locale.Ru);
+Loc.Set(Locale.Eng);
 Loc.LoadTranslation(Paths.Loc("loc.json"));
 var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
     PositionOption.Center);
@@ -130,7 +130,6 @@ var panel = new ButtonPanel([
     }
 ]);
 var saveMenu = new SaveMenu(gs, menuBg, Fonts.ArimoBold(50));
-
 while (!WindowShouldClose())
 {
     if (IsKeyPressed(KeyboardKey.F))
@@ -231,7 +230,7 @@ while (!WindowShouldClose())
         default:
             throw new ArgumentOutOfRangeException();
     }
-
+    
     /*
     Bg.DrawPrev();
     Bg.DrawCurrent();

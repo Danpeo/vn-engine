@@ -1,5 +1,8 @@
+using System.Numerics;
 using Vn.Story;
+using Vn.UI;
 using Vn.Utils;
+using static Vn.Loclization.Loc;
 
 namespace Vn.TheGame;
 
@@ -10,6 +13,7 @@ public class SaveMenu
     private const int SlotsPerPage = 5;
     private GameState currentState;
     private readonly Background _background;
+    public OutlineStyle OutlineStyle { get; set; } = OutlineStyle.Shadow;
     public readonly Font _font;
 
     public SaveMenu(GameState state, Background background, Font font)
@@ -22,10 +26,11 @@ public class SaveMenu
     public void Draw()
     {
         _background.Draw();
-        var textSize = MeasureTextEx(_font, "_title", _font.BaseSize, 0);
-        var textPos = Text.CenterPosition(textSize, 0, -70);
+        var textSize = MeasureTextEx(_font, L("Загрузить игру"), _font.BaseSize, 0);
+        var textPos = Text.CenterPosition(textSize, -90, -90);
 
-        DrawText("Save/Load Menu", 10, 10, 40, Color.Black);
+        Text.Draw(OutlineStyle, _font, L("Загрузить игру"), textPos, Color.White, Color.Black, 2, new Vector2(6, 6));
+        
 
         for (int i = 0; i < SlotsPerPage; i++)
         {
