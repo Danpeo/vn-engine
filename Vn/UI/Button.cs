@@ -10,6 +10,7 @@ public class Button
     public ButtonType ButtonType { get; set; } = ButtonType.Plain;
     public OutlineStyle OutlineStyle { get; set; } = OutlineStyle.Shadow;
     public Color TitleColor { get; set; } = Color.White;
+    public Color PrevTitleColor { get; private set; } = Color.White;
     public Color OutlineColor { get; set; } = Color.Black;
     public Color ButtonColor { get; set; } = Color.Gray;
     public Color ButtonHighlightColor { get; set; } = Color.Beige; 
@@ -73,6 +74,32 @@ public class Button
             default:
                 DrawTextEx(Font, L(Title), position, Font.BaseSize, 0, clr);
                 break;
+        }
+    }
+
+    public void ChangeTitleColor(Color color)
+    {
+        if (TitleColor.Eq(color)) return;
+        
+        PrevTitleColor = TitleColor;
+        TitleColor = color;
+    }
+
+    public void ChangeTitleColorToPrev()
+    {
+        if (TitleColor.Eq(PrevTitleColor)) return;
+        TitleColor = PrevTitleColor;
+    }
+    
+    public void UpdateTitleColor(Color color, Func<bool> condition)
+    {
+        if (condition())
+        {
+            ChangeTitleColor(color);
+        }
+        else
+        {
+            ChangeTitleColorToPrev();
         }
     }
 }

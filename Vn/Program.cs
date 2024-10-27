@@ -12,7 +12,7 @@ InitWindow(GameParams.ScreenWidth, GameParams.ScreenHeight, "Visual Novel");
 SetConfigFlags(ConfigFlags.Msaa4xHint);
 InitAudioDevice();
 SetTargetFPS(60);
-Loc.Set(Locale.Eng);
+Loc.Set(Saves.LoadSettings().Locale);
 Loc.LoadTranslation(Paths.Loc("loc.json"));
 var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
     PositionOption.Center);
