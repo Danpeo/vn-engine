@@ -33,8 +33,9 @@ var sasuke = new Character("Сасаке", new Dictionary<string, Sprite>
     { "dv3", dv3 }
 });
 
-var gs = Saves.LoadGame(1);
+/*
 var currDialogueInex = gs.CurrentDialogueIndex;
+*/
 
 var dialogues = new List<Dialogue>
 {
@@ -49,7 +50,9 @@ var dialogues = new List<Dialogue>
     new(naruto, "fgddg"),
 };
 
+/*
 var currentDialogue = dialogues[currDialogueInex];
+*/
 
 const int panelPadding = 50;
 
@@ -74,8 +77,9 @@ var bgs = new List<Background>
     new(Paths.Bg("bg1.png"), ImageAnimation.Slide, AnimationSpeed.Normal),
     new(Paths.Bg("orig.png"), ImageAnimation.Slide, AnimationSpeed.Normal),
 };
-var currBg = bgs.FirstOrDefault(b => b.Path == gs.CurrentBackgroundPath) ?? bgs.First();
-Bg.SetCurrent(currBg);
+/*var currBg = bgs.FirstOrDefault(b => b.Path == gs.CurrentBackgroundPath) ?? bgs.First();
+Bg.SetCurrent(currBg);*/
+Bg.SetCurrent(bgs.FirstOrDefault(b => b.Path == GS.CurrentState?.CurrentBackgroundPath) ?? bgs.First());
 
 var circle = new PulseCircle(circleX(), circleY());
 
@@ -88,12 +92,18 @@ var commands = new List<Command>
     new Command.DontDrawSprite(dv2),
     new Command.Say(new Dialogue(sasuke, "hahaha im fucking sasuke!!!")),
     new Command.Say(new Dialogue(sasuke, "coooool !!!")),
-    new Command.Say(new Dialogue(sasuke, "wwwow  fjsdkfjs")),
+    new Command.Say(new Dialogue(sasuke, "WHY!!!")),
     new Command.Bg(new Background(Paths.Bg("bg3.png"), ImageAnimation.Slide, AnimationSpeed.Normal))
 };
 
-var currentCommandIndex = 0;
+Dialogues.SetCurrent(GS.CurrentState?.CurrentDialogue ?? dialogues[0]);
+/*Dialogues.SetCurrent(gs.CurrentDialogue ?? dialogues[0]);
+Sprites.ToDraw = gs.SpritesOnScene;*/
+
+/*
+var currentCommandIndex = gs.LastCommandIndex;
 var currenetCommand = commands[currentCommandIndex];
+*/
 
 var exitModal = new YesNoModal("Выйти из игры?", () =>
 {
@@ -103,6 +113,7 @@ var exitModal = new YesNoModal("Выйти из игры?", () =>
 
 var menuBg = new Background(Paths.Bg("bg3.png"));
 var mainMenu = new MainMenu(menuBg, "Аниме крута так то!!", Fonts.ArimoBold(70));
+var saveMenu = new SaveMenu(new(), menuBg, Fonts.ArimoBold(50));
 var panel = new ButtonPanel([
     new("SKIP", () => Console.WriteLine("Skip clicked"))
     {
@@ -112,11 +123,11 @@ var panel = new ButtonPanel([
     {
         Font = Fonts.Main()
     },
-    new("SAVE", () => Console.WriteLine("Save clicked"))
+    new("SAVE", () => Scenes.Set(Scene.SaveMenu))
     {
         Font = Fonts.Main()
     },
-    new("LOAD", () => Console.WriteLine("Load clicked"))
+    new("LOAD", () => Scenes.Set(Scene.LoadMenu))
     {
         Font = Fonts.Main()
     },
@@ -129,7 +140,6 @@ var panel = new ButtonPanel([
         Font = Fonts.Main(),
     }
 ]);
-var saveMenu = new SaveMenu(gs, menuBg, Fonts.ArimoBold(50));
 while (!WindowShouldClose())
 {
     if (IsKeyPressed(KeyboardKey.F))
@@ -137,7 +147,7 @@ while (!WindowShouldClose())
         Display.ToggleFullscreenWindow(GameParams.ScreenWidth, GameParams.ScreenHeight);
     }
 
-    if (IsKeyPressed(KeyboardKey.R))
+    /*if (IsKeyPressed(KeyboardKey.R))
     {
         gs.Reset();
         Saves.SaveGame(gs);
@@ -145,7 +155,7 @@ while (!WindowShouldClose())
         currentDialogue = dialogues[currDialogueInex];
         currBg = bgs.First();
         Bg.SetCurrent(currBg);
-    }
+    }*/
 
     if (IsMouseButtonPressed(Right))
     {
@@ -208,7 +218,7 @@ while (!WindowShouldClose())
             dv.Draw();
 
             Sprites.DrawSprites();
-            Commands.Execute(currenetCommand);
+            Commands.Execute(commands[Commands.ExecutedCount]);
 
             dialoguePanel.Draw();
             circle.Update(circleX(), circleY(), circleAlpha());
@@ -218,14 +228,25 @@ while (!WindowShouldClose())
 
             if (IsKeyPressed(KeyboardKey.Space))
             {
-                currenetCommand = commands[++currentCommandIndex];
+                /*currenetCommand = commands[++currentCommandIndex];*/
+                Commands.ExecutedCount++;
+                /*saveMenu.SaveGame(0, new GameState
+                {
+                    CurrentBackground = Bg.CurrentBackground,
+                    CurrentDialogue = Dialogues.CurDialogue,
+                    LastCommandIndex = currentCommandIndex,
+                    SpritesOnScene = Sprites.ToDraw
+                });*/
             }
 
             panel.Draw();
             exitModal.Draw();
             break;
         case Scene.LoadMenu:
-            saveMenu.Draw();
+            saveMenu.Draw(toLoad: true);
+            break;
+        case Scene.SaveMenu:
+            saveMenu.Draw(toLoad: false);
             break;
         default:
             throw new ArgumentOutOfRangeException();
@@ -271,4 +292,4 @@ int circleY() => (int)(dialoguePanel.Y + dialoguePanel.Height - dialoguePanel.He
 int circleX() => (int)(dialoguePanel.X + dialoguePanel.Width - dialoguePanel.Width.ValueFromPercent(3));
 
 float circleAlpha() =>
-    dialoguePanel.Alpha < 1.0f ? 0.0f : dialogues[currDialogueInex].IsFinishedDrawing() ? 1.0f : 0.0f;
+    dialoguePanel.Alpha < 1.0f ? 0.0f : GS.CurrentState != null && dialogues[GS.CurrentState.CurrentDialogueIndex].IsFinishedDrawing() ? 1.0f : 0.0f;

@@ -25,13 +25,21 @@ public static class Saves
 
     public static void SaveGame(GameState state)
     {
-        string jsonString = JsonConvert.SerializeObject(state);
-        File.WriteAllText($"Save_{state.SaveCell}_{state.SaveTime:yyyy-MM-dd_HH-mm-ss}.json", jsonString);
+        var saveFiles = SaveFiles(state.SaveCell);
+
+        foreach (var file in saveFiles)
+        {
+            File.Delete(file);
+        }
+
+        string newFileName = $"Save_{state.SaveCell}_{state.SaveTime:yyyy-MM-dd_HH-mm-ss}.json";
+        string jsonString = JsonConvert.SerializeObject(state, Formatting.Indented);
+        File.WriteAllText(newFileName, jsonString);
     }
 
     public static GameState LoadGame(int saveCell)
     {
-        var saveFiles = Directory.GetFiles(Directory.GetCurrentDirectory(), $"Save_{saveCell}_*.json");
+        var saveFiles = SaveFiles(saveCell);
 
         if (saveFiles.Length == 0)
         {
@@ -42,4 +50,7 @@ public static class Saves
         string jsonString = File.ReadAllText(saveFile);
         return JsonConvert.DeserializeObject<GameState>(jsonString)!;
     }
+
+    private static string[] SaveFiles(int saveCell) =>
+        Directory.GetFiles(Directory.GetCurrentDirectory(), $"Save_{saveCell}_*.json");
 }

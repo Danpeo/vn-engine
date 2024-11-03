@@ -21,6 +21,7 @@ public abstract record Command
 
 public static class Commands
 { 
+    public static int ExecutedCount { get; set; }
     public static void Execute(Command command)
     {
         switch (command)

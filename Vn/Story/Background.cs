@@ -8,42 +8,42 @@ namespace Vn.Story;
 public class Background : ITexture
 {
     public string Path { get; }
-    private Texture2D _texture;
-    private readonly ImageAnimation _animation;
-    private readonly AnimationSpeed _originalAnimationSpeed;
-    private AnimationSpeed _currentAnimationSpeed;
-    private float _alpha;
-    private float _slidePosX;
-    private bool _animationCompleted;
-    private float _scaleX;
-    private float _scaleY;
+    public Texture2D Texture;
+    public readonly ImageAnimation Animation;
+    public readonly AnimationSpeed OriginalAnimationSpeed;
+    public AnimationSpeed CurrentAnimationSpeed;
+    public float Alpha;
+    public float SlidePosX;
+    public bool AnimationCompleted;
+    public float ScaleX;
+    public float ScaleY;
 
     public Background(string texturePath, ImageAnimation animation = ImageAnimation.Fade,
         AnimationSpeed originalAnimationSpeed = AnimationSpeed.Normal)
     {
-        _animation = animation;
-        _originalAnimationSpeed = originalAnimationSpeed;
-        _currentAnimationSpeed = originalAnimationSpeed;
+        Animation = animation;
+        OriginalAnimationSpeed = originalAnimationSpeed;
+        CurrentAnimationSpeed = originalAnimationSpeed;
       
-        Textures.Assign(ref _texture, texturePath);
+        Textures.Assign(ref Texture, texturePath);
         Path = texturePath;
         
-        _slidePosX = -_texture.Width;
+        SlidePosX = -Texture.Width;
         Textures.Add(this);
     }
 
-    private void UpdateScale() => Textures.UpdateScale(ref _texture, out _scaleX, out _scaleY);
+    private void UpdateScale() => Textures.UpdateScale(ref Texture, out ScaleX, out ScaleY);
 
     public void Draw()
     {
         UpdateScale();
-        if (_animationCompleted)
+        if (AnimationCompleted)
         {
             DrawWithNoneAnimation();
             return;
         }
 
-        switch (_animation)
+        switch (Animation)
         {
             case ImageAnimation.None:
                 DrawWithNoneAnimation();
@@ -62,23 +62,23 @@ public class Background : ITexture
     
     public void CompleteAnimation()
     {
-        _animationCompleted = true;
-        _alpha = 1.0f;
-        _slidePosX = CenterPosX();
-        _currentAnimationSpeed = _originalAnimationSpeed;
+        AnimationCompleted = true;
+        Alpha = 1.0f;
+        SlidePosX = CenterPosX();
+        CurrentAnimationSpeed = OriginalAnimationSpeed;
     }
 
     public void Reset()
     {
-        _animationCompleted = false;
-        _alpha = 0.0f;
-        _slidePosX = -_texture.Width;
+        AnimationCompleted = false;
+        Alpha = 0.0f;
+        SlidePosX = -Texture.Width;
     }
 
     private void DrawWithSlideAnimation()
     {
         float targetPosX = CenterPosX();
-        float slideShiftSpeed = _currentAnimationSpeed switch
+        float slideShiftSpeed = CurrentAnimationSpeed switch
         {
             AnimationSpeed.VerySlow => 1f,
             AnimationSpeed.Slow => 3f,
@@ -89,15 +89,15 @@ public class Background : ITexture
         };
 
         float t = slideShiftSpeed * GetFrameTime();
-        _slidePosX = MathEx.Lerp(_slidePosX, targetPosX, t);
+        SlidePosX = MathEx.Lerp(SlidePosX, targetPosX, t);
 
-        if (_slidePosX.AlmostEqual(targetPosX)) 
+        if (SlidePosX.AlmostEqual(targetPosX)) 
         {
-            _slidePosX = targetPosX;
-            _animationCompleted = true;
+            SlidePosX = targetPosX;
+            AnimationCompleted = true;
         }
 
-        DrawTextureEx(_texture, new Vector2(_slidePosX, CenterPosY()), 0.0f, _scaleX, Color.White);
+        DrawTextureEx(Texture, new Vector2(SlidePosX, CenterPosY()), 0.0f, ScaleX, Color.White);
     }
 
     private void DrawWithFadeAnimation()
@@ -105,30 +105,30 @@ public class Background : ITexture
         const float targetAlpha = 1.0f;
         float alphaSpeed = AlphaSpeed() * GetFrameTime();
 
-        if (_alpha < targetAlpha)
+        if (Alpha < targetAlpha)
         {
-            float distanceToTarget = targetAlpha - _alpha;
+            float distanceToTarget = targetAlpha - Alpha;
             if (distanceToTarget.NearlyZero())
             {
                 alphaSpeed *= distanceToTarget / 0.1f; 
             }
 
-            _alpha += alphaSpeed;
+            Alpha += alphaSpeed;
 
-            if (_alpha > targetAlpha)
+            if (Alpha > targetAlpha)
             {
-                _alpha = targetAlpha;
-                _animationCompleted = true;
+                Alpha = targetAlpha;
+                AnimationCompleted = true;
             }
         }
 
-        var fadeColor = new Color(255, 255, 255, (int)(_alpha * 255));
+        var fadeColor = new Color(255, 255, 255, (int)(Alpha * 255));
         var pos = CenterPosition();
-        DrawTextureEx(_texture, pos, 0.0f, _scaleX, fadeColor);
+        DrawTextureEx(Texture, pos, 0.0f, ScaleX, fadeColor);
     }
 
     private float AlphaSpeed() =>
-        _currentAnimationSpeed switch
+        CurrentAnimationSpeed switch
         {
             AnimationSpeed.VerySlow => 0.5f,
             AnimationSpeed.Slow => 1.5f,
@@ -141,7 +141,7 @@ public class Background : ITexture
     private void DrawWithNoneAnimation()
     {
         var pos = CenterPosition();
-        DrawTextureEx(_texture, pos, 0.0f, _scaleX, Color.White);
+        DrawTextureEx(Texture, pos, 0.0f, ScaleX, Color.White);
     }
 
     private Vector2 CenterPosition()
@@ -151,16 +151,16 @@ public class Background : ITexture
         return new Vector2(posX, posY);
     }
 
-    private float CenterPosX() => (Display.Width() - _texture.Width * _scaleX) / 2;
-    private float CenterPosY() => (Display.Height() - _texture.Height * _scaleY) / 2;
+    private float CenterPosX() => (Display.Width() - Texture.Width * ScaleX) / 2;
+    private float CenterPosY() => (Display.Height() - Texture.Height * ScaleY) / 2;
 
     public void ChangeAnimationSpeed(AnimationSpeed newAnimationSpeed)
     {
-        _currentAnimationSpeed = newAnimationSpeed;
+        CurrentAnimationSpeed = newAnimationSpeed;
     }
 
     public void Unload()
     {
-        UnloadTexture(_texture);
+        UnloadTexture(Texture);
     }
 }

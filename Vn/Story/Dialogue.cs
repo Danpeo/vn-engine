@@ -11,6 +11,7 @@ public class Dialogue
     public string Text { get; private set; }
     public Character? Character { get; private set; }
     public Color TextColor { get; set; }
+    public bool WasDrawn { get; set; }
     private int _charIndex;
     private float _timePassed;
     private readonly float _charDisplaySpeed;
@@ -20,9 +21,10 @@ public class Dialogue
     private DialogueAudioType _audioType;
     private Sound? _voiceLine;
     private Sound? _soundEffect;
-    
+
     public Dialogue(Character? character, string text, float displaySpeed = 0.015f, float alphaSpeed = 0.04f,
-        Color? textColor = null, DialogueAudioType audioType = DialogueAudioType.None, Sound? voiceLine = null, Sound? soundEffect = null)
+        Color? textColor = null, DialogueAudioType audioType = DialogueAudioType.None, Sound? voiceLine = null,
+        Sound? soundEffect = null)
     {
         Text = text;
         _charDisplaySpeed = displaySpeed;
@@ -39,13 +41,13 @@ public class Dialogue
     public void Update()
     {
         _timePassed += GetFrameTime();
-        
+
         if (_charIndex < Text.Length && _timePassed >= _charDisplaySpeed)
         {
             _charIndex++;
             _timePassed = 0.0f;
             _alphas.Add(0.0f);
-            
+
             PlayCharacterAudio();
         }
 
@@ -83,46 +85,58 @@ public class Dialogue
         const int padding = 10;
         const int namePadding = 40;
         var pos = new Vector2(panel.X + padding, panel.Y + namePadding);
-
-        if (!panel.IsFullyVisible()) return;
         
+        if (!panel.IsFullyVisible()) return;
+
         Character.IfSome(
-            character => DrawTextEx(Fonts.Accent(), character.CurrentDisplayName(), new Vector2(panel.X + padding, panel.Y + padding),
+            character => DrawTextEx(Fonts.Accent(), character.CurrentDisplayName(),
+                new Vector2(panel.X + padding, panel.Y + padding),
                 Fonts.Accent().BaseSize, 2,
                 character.Color)
         );
+
+        if (WasDrawn)
+        {
+            DrawTextEx(font, Text, pos, fontSize, spacing, TextColor);
+            return;
+        }
         
-        float maxWidth = panel.Width - 2 * padding; 
+        float maxWidth = panel.Width - 2 * padding;
         float currentLineWidth = 0;
-        
+
         for (int i = 0; i < _charIndex; i++)
         {
             char currentChar = Text[i];
             string charStr = currentChar.ToString();
 
             Vector2 charSize = MeasureTextEx(font, charStr, fontSize, spacing);
-            
+
             // If the line length is greater than the max line length, start a new line
             if (currentLineWidth + charSize.X > maxWidth)
             {
                 // Start new line
-                pos.X = panel.X + padding;  
-                
+                pos.X = panel.X + padding;
+
                 // Move Y down to start a new line
-                pos.Y += charSize.Y;        
-                currentLineWidth = 0;       
+                pos.Y += charSize.Y;
+                currentLineWidth = 0;
             }
-            
+
             currentLineWidth += charSize.X;
-            
+
             TextColor = TextColor with { A = (byte)(_alphas[i] * 255) };
 
             DrawTextEx(font, charStr, pos, fontSize, spacing, TextColor);
 
             pos.X += charSize.X;
         }
+
+        if (IsFinishedDrawing())
+        {
+            WasDrawn = true;
+        }
     }
-    
+
     public bool IsFinishedDrawing() => _charIndex >= Text.Length && _alphas.All(a => a.AlmostEqual(1.0f));
 
     public void Skip()

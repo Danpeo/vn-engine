@@ -2,7 +2,7 @@ namespace Vn.Story;
 
 public static class Sprites
 {
-    public static readonly List<Sprite> ToDraw = [];
+    public static List<Sprite> ToDraw { get; set; } = [];
 
     public static void AddToDraw(Sprite sprite)
     {

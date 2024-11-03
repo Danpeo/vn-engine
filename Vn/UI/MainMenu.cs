@@ -35,7 +35,10 @@ public class MainMenu
         _startButton = new Button("Начать игру", () =>
         {
             if (UILayers.Current == UILayer.MainMenu)
+            {
+                GS.Set(new GameState());
                 Scenes.Set(Scene.Game);
+            }
         })
         {
             Font = Fonts.ArimoBold(55),
