@@ -7,7 +7,7 @@ using Vn.UI;
 using Vn.Utils;
 using static Raylib_cs.MouseButton;
 using Textures = Vn.UI.Textures;
-
+//
 InitWindow(GameParams.ScreenWidth, GameParams.ScreenHeight, "Visual Novel");
 SetConfigFlags(ConfigFlags.Msaa4xHint);
 InitAudioDevice();
