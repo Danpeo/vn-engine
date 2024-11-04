@@ -85,7 +85,7 @@ public class Dialogue
         const int padding = 10;
         const int namePadding = 40;
         var pos = new Vector2(panel.X + padding, panel.Y + namePadding);
-        
+
         if (!panel.IsFullyVisible()) return;
 
         Character.IfSome(
@@ -97,13 +97,15 @@ public class Dialogue
 
         if (WasDrawn)
         {
-            DrawTextEx(font, Text, pos, fontSize, spacing, TextColor);
-            return;
+            for (int i = 0; i < _alphas.Count; i++)
+            {
+                _alphas[i] = 1.0f;
+            }
         }
-        
-        float maxWidth = panel.Width - 2 * padding;
-        float currentLineWidth = 0;
 
+        float maxWidth = panel.Width - 2 * padding;
+
+        float currentLineWidth = 0;
         for (int i = 0; i < _charIndex; i++)
         {
             char currentChar = Text[i];

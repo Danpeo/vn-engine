@@ -3,7 +3,6 @@ namespace Vn.Story;
 public class GameState
 {
     public int SaveCell { get; set; }
-    public string FileName { get; set; } = string.Empty;
     public DateTime SaveTime { get; set; }
     public Dialogue? CurrentDialogue { get; set; }
     public Background? CurrentBackground { get; set; }
@@ -14,7 +13,6 @@ public class GameState
     
     public void Reset()
     {
-        FileName = string.Empty;  
         CurrentDialogueIndex = 0;
         CurrentBackgroundPath = null;
         SaveTime = DateTime.Now;

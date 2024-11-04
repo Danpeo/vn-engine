@@ -7,6 +7,7 @@ using Vn.UI;
 using Vn.Utils;
 using static Raylib_cs.MouseButton;
 using Textures = Vn.UI.Textures;
+
 //
 InitWindow(GameParams.ScreenWidth, GameParams.ScreenHeight, "Visual Novel");
 SetConfigFlags(ConfigFlags.Msaa4xHint);
@@ -85,6 +86,9 @@ var circle = new PulseCircle(circleX(), circleY());
 
 var commands = new List<Command>
 {
+    new Command.Say(new(null, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(null, "Но его беспокойство было не о собственном комфорте — он сжимал свою драгоценную лютню," +
+                              " как будто это был единственный способ защитить её от стихии.")),
     new Command.DrawSprite(dv2),
     new Command.Act(() => dv2.Move(PositionOption.Right)),
     new Command.DrawSprite(dv3),
@@ -96,7 +100,7 @@ var commands = new List<Command>
     new Command.Bg(new Background(Paths.Bg("bg3.png"), ImageAnimation.Slide, AnimationSpeed.Normal))
 };
 
-Dialogues.SetCurrent(GS.CurrentState?.CurrentDialogue ?? dialogues[0]);
+Dialogues.SetCurrent(GS.CurrentState?.CurrentDialogue);
 /*Dialogues.SetCurrent(gs.CurrentDialogue ?? dialogues[0]);
 Sprites.ToDraw = gs.SpritesOnScene;*/
 
@@ -191,7 +195,6 @@ while (!WindowShouldClose())
     /*
     currentDialogue.Update();
     */
-    Dialogues.CurDialogue?.Update();
 
 
     dialoguePanel.Width = Display.Width() - 2 * panelPadding;
@@ -220,9 +223,13 @@ while (!WindowShouldClose())
             Sprites.DrawSprites();
             Commands.Execute(commands[Commands.ExecutedCount]);
 
-            dialoguePanel.Draw();
+            if (Dialogues.CurDialogue != null)
+            {
+                dialoguePanel.Draw();
+            }
             circle.Update(circleX(), circleY(), circleAlpha());
             circle.Draw();
+            Dialogues.CurDialogue?.Update();
             Dialogues.CurDialogue?.Draw(dialoguePanel, Fonts.Main(), Fonts.Main().BaseSize, 2);
             //dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
@@ -251,7 +258,7 @@ while (!WindowShouldClose())
         default:
             throw new ArgumentOutOfRangeException();
     }
-    
+
     /*
     Bg.DrawPrev();
     Bg.DrawCurrent();
@@ -292,4 +299,5 @@ int circleY() => (int)(dialoguePanel.Y + dialoguePanel.Height - dialoguePanel.He
 int circleX() => (int)(dialoguePanel.X + dialoguePanel.Width - dialoguePanel.Width.ValueFromPercent(3));
 
 float circleAlpha() =>
-    dialoguePanel.Alpha < 1.0f ? 0.0f : GS.CurrentState != null && dialogues[GS.CurrentState.CurrentDialogueIndex].IsFinishedDrawing() ? 1.0f : 0.0f;
+    dialoguePanel.Alpha < 1.0f ? 0.0f :
+    GS.CurrentState != null && dialogues[GS.CurrentState.CurrentDialogueIndex].IsFinishedDrawing() ? 1.0f : 0.0f;

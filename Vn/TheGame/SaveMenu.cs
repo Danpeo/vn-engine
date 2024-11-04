@@ -81,7 +81,7 @@ public class SaveMenu
                     if (state.CurrentDialogue != null) Dialogues.SetCurrent(state.CurrentDialogue);
                     Sprites.ToDraw = state.SpritesOnScene;
                     if (state.CurrentBackground != null) Bg.SetCurrent(state.CurrentBackground);
-                    
+                    Commands.ExecutedCount = state.LastCommandIndex;
                     Scenes.Set(Scene.Game);
                 }
                 else
