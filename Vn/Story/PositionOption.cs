@@ -8,5 +8,6 @@ public enum PositionOption
     Right,
     FarRight,
     Top,
-    Bottom
+    Bottom,
+    AwayToLeft
 }

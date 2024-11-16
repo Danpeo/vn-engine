@@ -1,13 +1,14 @@
 using System.Numerics;
 using Vn.Utils;
+using static Vn.Loclization.Loc;
 
 namespace Vn.UI;
 
 public class YesNoModal
 {
     public bool IsVisible { get; set; }
-    public string YesText { get; set; } = "Да";
-    public string NoText { get; set; } = "Нет";
+    public string YesText { get; set; } = L("Да");
+    public string NoText { get; set; } = L("Нет");
     public Color FontColor { get; set; } = Color.RayWhite;
     public Color BackgroundColor { get; set; } = Color.DarkGray;
     private readonly string _message = string.Empty;
@@ -61,11 +62,9 @@ public class YesNoModal
         Vector2 noButtonPosition = new Vector2(pos.X + 250, pos.Y + 100);
         Vector2 buttonSize = new Vector2(100, 40);
 
-        // Рисуем кнопки
         _yesButton.Draw(yesButtonPosition, buttonSize);
         _noButton.Draw(noButtonPosition, buttonSize);
 
-        // Обрабатываем события кнопок
         _yesButton.Draw(yesButtonPosition, buttonSize);
         _noButton.Draw(noButtonPosition, buttonSize);
     }

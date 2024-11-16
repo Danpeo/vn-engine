@@ -1,11 +1,12 @@
 ﻿using System.Numerics;
+using Vn.Audio;
 using Vn.Constants;
-using Vn.Loclization;
 using Vn.Story;
 using Vn.TheGame;
 using Vn.UI;
 using Vn.Utils;
 using static Raylib_cs.MouseButton;
+using static Vn.Loclization.Loc;
 using Textures = Vn.UI.Textures;
 
 //
@@ -13,14 +14,26 @@ InitWindow(GameParams.ScreenWidth, GameParams.ScreenHeight, "Visual Novel");
 SetConfigFlags(ConfigFlags.Msaa4xHint);
 InitAudioDevice();
 SetTargetFPS(60);
-Loc.Set(Saves.LoadSettings().Locale);
-Loc.LoadTranslation(Paths.Loc("loc.json"));
+Set(Saves.LoadSettings().Locale);
+LoadTranslation(Paths.Loc("loc.json"));
+UILayers.Set(UILayer.MainMenu);
 var dv = new Sprite(Paths.Sprites("dv pioneer normal.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
     PositionOption.Center);
 var dv2 = new Sprite(Paths.Sprites("dv pioneer laugh.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
     PositionOption.Left);
 var dv3 = new Sprite(Paths.Sprites("dv pioneer rage.png"), ImageAnimation.Slide, AnimationSpeed.VeryFast,
     PositionOption.Center);
+
+var thomasSprite = new Sprite(Paths.Sprites("thomas.png"));
+var walterSprite = new Sprite(Paths.Sprites("walter.png"));
+
+var thomas = new Character(L("Томас"), new Dictionary<string, Sprite>
+{
+    { "normal", thomasSprite },
+})
+{
+    Color = Color.Violet
+};
 
 var naruto = new Character("Нарутыч", [])
 {
@@ -63,9 +76,9 @@ var dialoguePanel = new DialoguePanel(
     Pos.PanelY(),
     Display.Width() - 2 * panelPadding,
     150,
-    0.15f,
+    0.1f,
     16,
-    Color.DarkGray,
+    new Color(40, 40, 40, 255),
     DialoguePanelAnimation.Fade
 );
 
@@ -75,8 +88,7 @@ var bg2 = new Background(Paths.Bg("orig.png"), ImageAnimation.Slide, AnimationSp
 
 var bgs = new List<Background>
 {
-    new(Paths.Bg("bg1.png"), ImageAnimation.Slide, AnimationSpeed.Normal),
-    new(Paths.Bg("orig.png"), ImageAnimation.Slide, AnimationSpeed.Normal),
+    new Background(Paths.Bg("blizzard.png"))
 };
 /*var currBg = bgs.FirstOrDefault(b => b.Path == gs.CurrentBackgroundPath) ?? bgs.First();
 Bg.SetCurrent(currBg);*/
@@ -84,16 +96,22 @@ Bg.SetCurrent(bgs.FirstOrDefault(b => b.Path == GS.CurrentState?.CurrentBackgrou
 
 var circle = new PulseCircle(circleX(), circleY());
 
+Sounds.Load(AllSounds.ButtonClick, Paths.Audio("click.wav"));
+Musics.Load(Paths.Audio("cave.ogg"));
+Musics.Play();
 var commands = new List<Command>
 {
-    new Command.Say(new(null, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.SayAct(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра."), [
+        new Command.Music(Paths.Audio("forest.ogg"))
+    ]),
     new Command.Say(new(null, "Но его беспокойство было не о собственном комфорте — он сжимал свою драгоценную лютню," +
                               " как будто это был единственный способ защитить её от стихии.")),
-    new Command.DrawSprite(dv2),
-    new Command.Act(() => dv2.Move(PositionOption.Right)),
-    new Command.DrawSprite(dv3),
-    new Command.Act(() => dv3.Move(PositionOption.Center)),
-    new Command.DontDrawSprite(dv2),
+    new Command.SayAct(new(null, "Trye with some more"), [
+        new Command.DrawSprite(thomasSprite)
+    ]),
+
+    new Command.Act(() => thomasSprite.Move(PositionOption.AwayToLeft)),
+    new Command.DrawSprite(walterSprite),
     new Command.Say(new Dialogue(sasuke, "hahaha im fucking sasuke!!!")),
     new Command.Say(new Dialogue(sasuke, "coooool !!!")),
     new Command.Say(new Dialogue(sasuke, "WHY!!!")),
@@ -119,33 +137,26 @@ var menuBg = new Background(Paths.Bg("bg3.png"));
 var mainMenu = new MainMenu(menuBg, "Аниме крута так то!!", Fonts.ArimoBold(70));
 var saveMenu = new SaveMenu(new(), menuBg, Fonts.ArimoBold(50));
 var panel = new ButtonPanel([
-    new("SKIP", () => Console.WriteLine("Skip clicked"))
+    new("Сохранить", () => Scenes.Set(Scene.SaveMenu))
     {
         Font = Fonts.Main()
     },
-    new("AUTO", () => Console.WriteLine("Auto clicked"))
+    new("Загрузить", () => Scenes.Set(Scene.LoadMenu))
     {
         Font = Fonts.Main()
     },
-    new("SAVE", () => Scenes.Set(Scene.SaveMenu))
+    new("Настройки", () => Console.WriteLine("Config clicked"))
     {
         Font = Fonts.Main()
     },
-    new("LOAD", () => Scenes.Set(Scene.LoadMenu))
-    {
-        Font = Fonts.Main()
-    },
-    new("CONFIG", () => Console.WriteLine("Config clicked"))
-    {
-        Font = Fonts.Main()
-    },
-    new("EXIT", () => exitModal.Show())
+    new("Выйти", () => exitModal.Show())
     {
         Font = Fonts.Main(),
     }
 ]);
 while (!WindowShouldClose())
 {
+    Musics.Update();
     if (IsKeyPressed(KeyboardKey.F))
     {
         Display.ToggleFullscreenWindow(GameParams.ScreenWidth, GameParams.ScreenHeight);
@@ -161,7 +172,7 @@ while (!WindowShouldClose())
         Bg.SetCurrent(currBg);
     }*/
 
-    if (IsMouseButtonPressed(Right))
+    if (IsMouseButtonPressed(Right) && UILayers.Current == UILayer.Game)
     {
         dialoguePanel.ToggleVisibility();
     }
@@ -201,7 +212,7 @@ while (!WindowShouldClose())
     dialoguePanel.Height = Display.Height() / 5;
 
     BeginDrawing();
-    ClearBackground(Color.White);
+    ClearBackground(Color.Black);
 
     switch (Scenes.Current)
     {
@@ -209,16 +220,8 @@ while (!WindowShouldClose())
             mainMenu.Draw();
             break;
         case Scene.Game:
-
             Bg.DrawPrev();
             Bg.DrawCurrent();
-
-            if (IsKeyDown(KeyboardKey.D))
-            {
-                dv.Move(PositionOption.Center);
-            }
-
-            dv.Draw();
 
             Sprites.DrawSprites();
             Commands.Execute(commands[Commands.ExecutedCount]);
@@ -227,6 +230,7 @@ while (!WindowShouldClose())
             {
                 dialoguePanel.Draw();
             }
+
             circle.Update(circleX(), circleY(), circleAlpha());
             circle.Draw();
             Dialogues.CurDialogue?.Update();
@@ -287,7 +291,8 @@ while (!WindowShouldClose())
 
     EndDrawing();
 }
-
+Sounds.Unload();
+Musics.Unload();
 Fonts.Unload();
 CloseAudioDevice();
 Textures.UnloadAll();

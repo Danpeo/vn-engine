@@ -43,7 +43,7 @@ public class MainMenu
         {
             Font = Fonts.ArimoBold(55),
         };
-        _loadGameButton = new Button("Загрузить игру", () =>
+        _loadGameButton = new Button("Загрузить", () =>
         {
             if (UILayers.Current == UILayer.MainMenu)
                 Scenes.Set(Scene.LoadMenu);

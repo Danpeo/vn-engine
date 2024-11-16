@@ -1,4 +1,5 @@
 using System.Numerics;
+using Vn.Audio;
 using Vn.Constants;
 using Vn.Utils;
 using static Vn.Loclization.Loc;
@@ -20,6 +21,8 @@ public class Button
     public Font Font { get; set; } = Fonts.ArimoBold();
     public string Title { get; set; }
     private Action _onClick;
+    private Sound _clickSound;
+    public AllSounds? ClickSound { get; set; } = AllSounds.ButtonClick;
 
     public Button(string title, Action onClick)
     {
@@ -41,6 +44,7 @@ public class Button
             
             if (IsMouseButtonPressed(MouseButton.Left))
             {
+                if (ClickSound.HasValue) Sounds.Play(ClickSound.Value);
                 _onClick.Invoke();
             }
         }

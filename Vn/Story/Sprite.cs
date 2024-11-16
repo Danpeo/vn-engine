@@ -48,26 +48,35 @@ public class Sprite : ITexture
         {
             return new Vector2(customPosition.Value.X * ScaleX, customPosition.Value.Y * ScaleY);
         }
-        
+
         return positionOption switch
         {
-            PositionOption.Center => new Vector2((screenWidth - Texture.Width * ScaleX) / 2f, (screenHeight - Texture.Height * ScaleY) / 2f),
+            PositionOption.Center => new Vector2((screenWidth - Texture.Width * ScaleX) / 2f,
+                (screenHeight - Texture.Height * ScaleY) / 2f),
             PositionOption.Left => new Vector2(0f, (screenHeight - Texture.Height * ScaleY) / 2f),
-            PositionOption.Right => new Vector2(screenWidth - Texture.Width * ScaleX, (screenHeight - Texture.Height * ScaleY) / 2f),
+            PositionOption.Right => new Vector2(screenWidth - Texture.Width * ScaleX,
+                (screenHeight - Texture.Height * ScaleY) / 2f),
             PositionOption.Top => new Vector2((screenWidth - Texture.Width * ScaleX) / 2f, 0f),
-            PositionOption.Bottom => new Vector2((screenWidth - Texture.Width * ScaleX) / 2f, screenHeight - Texture.Height * ScaleY),
-            PositionOption.FarLeft => new Vector2(-(screenWidth - Texture.Width * ScaleX) * 0.15f, (screenHeight - Texture.Height * ScaleY) / 2f),
-            PositionOption.FarRight => new Vector2(screenWidth, (screenHeight - Texture.Height * ScaleY) / 2f), 
-            _ => new Vector2((screenWidth - Texture.Width * ScaleX) / 2f, (screenHeight - Texture.Height * ScaleY) / 2f),
+            PositionOption.Bottom => new Vector2((screenWidth - Texture.Width * ScaleX) / 2f,
+                screenHeight - Texture.Height * ScaleY),
+            PositionOption.FarLeft => new Vector2(-(screenWidth - Texture.Width * ScaleX) * 0.15f,
+                (screenHeight - Texture.Height * ScaleY) / 2f),
+            PositionOption.FarRight => new Vector2(screenWidth, (screenHeight - Texture.Height * ScaleY) / 2f),
+            PositionOption.AwayToLeft => new Vector2(-(screenWidth + Texture.Width * ScaleX + 500),
+                (screenHeight - Texture.Height * ScaleY) / 2f),
+            _ => new Vector2((screenWidth - Texture.Width * ScaleX) / 2f,
+                (screenHeight - Texture.Height * ScaleY) / 2f),
         };
     }
 
     public void Draw()
     {
+        Console.WriteLine(MoveDestination.HasValue ? MoveDestination.Value : -1);
         UpdateScale();
         if (!MoveDestination.HasValue)
         {
             Position = GetPosition(PositionOption, CustomPos);
+            Console.WriteLine(Position);
         }
 
         switch (Animation)
@@ -93,21 +102,14 @@ public class Sprite : ITexture
             MoveDestination = GetPosition(PositionOption, CustomPos);
         }
 
-        if (Vector2.Distance(Position, MoveDestination.Value) > 0.1f)
-        {
-            Move(PositionOption, CustomPos);
-        }
-        else
-        {
-            MoveDestination = null;
-            Moved = true;
-        }
+        Move(PositionOption, CustomPos);
 
         DrawTextureEx(Texture, Position, 0, ScaleX, Color.White);
     }
 
     public void Move(PositionOption positionOption, Vector2? customPos = null)
     {
+        PositionOption = positionOption;
         var speed = CurrentAnimationSpeed switch
         {
             AnimationSpeed.VerySlow => 1f,
@@ -117,22 +119,16 @@ public class Sprite : ITexture
             AnimationSpeed.VeryFast => 15f,
             _ => 5f
         };
+
         MoveDestination = GetPosition(positionOption, customPos);
-        if (MoveDestination.HasValue && Vector2.Distance(Position, MoveDestination.Value) > 0.1f)
-        {
-            Moved = false;
-            float step = speed * GetFrameTime();
-            Position = MathEx.Lerp(Position, MoveDestination.Value, step);
-            Position.X = MathF.Round(Position.X);
-            Position.Y = MathF.Round(Position.Y);
-        }
-        else
-        {
-            MoveDestination = null;
-            Moved = true;
-        }
+        float step = speed * GetFrameTime();
+
+        Position = MathEx.Lerp(Position, MoveDestination.Value, step);
+        Position.X = MathF.Round(Position.X);
+        Position.Y = MathF.Round(Position.Y);
     }
 
+    
     private void DrawWithNoneAnimation()
     {
         DrawTextureEx(Texture, Position, 0, ScaleX, Color.White);

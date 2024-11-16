@@ -33,7 +33,7 @@ public class Dialogue
         _audioType = audioType;
         _voiceLine = voiceLine;
         _soundEffect = soundEffect;
-        TextColor = textColor ?? Color.LightGray;
+        TextColor = textColor ?? GameParams.GlobalTextColor;
         Character = character ?? null;
         Dialogues.Add(this);
     }
@@ -84,13 +84,13 @@ public class Dialogue
     {
         const int padding = 10;
         const int namePadding = 40;
-        var pos = new Vector2(panel.X + padding, panel.Y + namePadding);
+        var pos = new Vector2(panel.X + padding + 30, panel.Y + namePadding);
 
         if (!panel.IsFullyVisible()) return;
 
         Character.IfSome(
             character => DrawTextEx(Fonts.Accent(), character.CurrentDisplayName(),
-                new Vector2(panel.X + padding, panel.Y + padding),
+                new Vector2(panel.X + padding + 30, panel.Y + padding),
                 Fonts.Accent().BaseSize, 2,
                 character.Color)
         );
@@ -103,7 +103,7 @@ public class Dialogue
             }
         }
 
-        float maxWidth = panel.Width - 2 * padding;
+        float maxWidth = panel.Width - 2 * padding - 30;
 
         float currentLineWidth = 0;
         for (int i = 0; i < _charIndex; i++)

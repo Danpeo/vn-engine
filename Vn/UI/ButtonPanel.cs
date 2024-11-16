@@ -6,7 +6,7 @@ public class ButtonPanel
 {
     private readonly List<Button> _buttons;
     private Vector2 _buttonSize = new(100, 50); 
-    private float _spacing = 10f; 
+    private float _spacing = 5f; 
 
     public ButtonPanel(List<Button> buttons)
     {
@@ -22,7 +22,7 @@ public class ButtonPanel
     {
         float totalWidth = (_buttonSize.X + _spacing) * _buttons.Count - _spacing;
         float startX = GetScreenWidth() - totalWidth - 20; 
-        float startY = GetScreenHeight() - _buttonSize.Y - 20; 
+        float startY = GetScreenHeight() - _buttonSize.Y; 
 
         for (int i = 0; i < _buttons.Count; i++)
         {

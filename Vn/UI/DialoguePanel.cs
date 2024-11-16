@@ -107,6 +107,8 @@ public class DialoguePanel
             : Color;
 
         DrawRectangleRounded(panel, Roundness, Segments, panelColor);
+        Color outerColor = Color with { A = (byte)(100 * Alpha) };
+        DrawRectangleRoundedLines(panel, Roundness, Segments, 3, outerColor);
     }
 
     public bool IsFullyVisible() =>
