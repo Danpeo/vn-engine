@@ -30,4 +30,6 @@ public class ButtonPanel
             _buttons[i].Draw(position, _buttonSize);
         }
     }
+    
+    public bool IsAnyHovering() => _buttons.Any(b => b.IsHovering);
 }

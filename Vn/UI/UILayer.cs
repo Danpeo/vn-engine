@@ -6,5 +6,6 @@ public enum UILayer
     MainMenu,
     YesNoModal,
     Game,
-    SaveLoad
+    SaveLoad,
+    Button
 }

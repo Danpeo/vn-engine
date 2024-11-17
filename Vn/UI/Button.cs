@@ -14,7 +14,7 @@ public class Button
     public Color PrevTitleColor { get; private set; } = Color.White;
     public Color OutlineColor { get; set; } = Color.Black;
     public Color ButtonColor { get; set; } = Color.Gray;
-    public Color ButtonHighlightColor { get; set; } = Color.Beige; 
+    public Color ButtonHighlightColor { get; set; } = Color.Beige;
     public Color HighlightColor { get; set; } = Color.Gold;
     public int OutlineThickness { get; set; } = 2;
     public Vector2 ShadowOffset { get; set; } = new(6, 6);
@@ -22,6 +22,7 @@ public class Button
     public string Title { get; set; }
     private Action _onClick;
     private Sound _clickSound;
+    public bool IsHovering { get; private set; }
     public AllSounds? ClickSound { get; set; } = AllSounds.ButtonClick;
 
     public Button(string title, Action onClick)
@@ -39,9 +40,10 @@ public class Button
         if (mousePosition.X >= position.X && mousePosition.X <= position.X + size.X &&
             mousePosition.Y >= position.Y && mousePosition.Y <= position.Y + size.Y)
         {
+            IsHovering = true;
             clr = HighlightColor;
             buttonClr = ButtonHighlightColor;
-            
+
             if (IsMouseButtonPressed(MouseButton.Left))
             {
                 if (ClickSound.HasValue) Sounds.Play(ClickSound.Value);
@@ -50,19 +52,21 @@ public class Button
         }
         else
         {
+            IsHovering = false;
             clr = TitleColor;
         }
 
         switch (ButtonType)
         {
             case ButtonType.Outline:
-                DrawRectangleRounded(new Rectangle(position, size with{X = size.X + 10, Y = size.Y + 10}), 5, 16, buttonClr);
+                DrawRectangleRounded(new Rectangle(position, size with { X = size.X + 10, Y = size.Y + 10 }), 5, 16,
+                    buttonClr);
                 break;
             case ButtonType.Plain:
             default:
-                    break;
+                break;
         }
-        
+
         switch (OutlineStyle)
         {
             case OutlineStyle.None:
@@ -84,7 +88,7 @@ public class Button
     public void ChangeTitleColor(Color color)
     {
         if (TitleColor.Eq(color)) return;
-        
+
         PrevTitleColor = TitleColor;
         TitleColor = color;
     }
@@ -94,7 +98,7 @@ public class Button
         if (TitleColor.Eq(PrevTitleColor)) return;
         TitleColor = PrevTitleColor;
     }
-    
+
     public void UpdateTitleColor(Color color, Func<bool> condition)
     {
         if (condition())

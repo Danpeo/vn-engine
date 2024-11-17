@@ -133,8 +133,12 @@ var exitModal = new YesNoModal("Выйти из игры?", () =>
         Environment.Exit(0);
 }, () => UILayers.Set(UILayer.Game));
 
-var menuBg = new Background(Paths.Bg("bg3.png"));
-var mainMenu = new MainMenu(menuBg, "Аниме крута так то!!", Fonts.ArimoBold(70));
+var menuBg = new Background(Paths.Bg("tavern.png"));
+var mainMenu = new MainMenu(menuBg, "Таверна", Fonts.ElMessiriMedium(120))
+{
+    TitleColor = new Color(251, 241, 199, 255),
+    OutlineStyle = OutlineStyle.Solid
+};
 var saveMenu = new SaveMenu(new(), menuBg, Fonts.ArimoBold(50));
 var panel = new ButtonPanel([
     new("Сохранить", () => Scenes.Set(Scene.SaveMenu))
@@ -231,27 +235,39 @@ while (!WindowShouldClose())
                 dialoguePanel.Draw();
             }
 
-            circle.Update(circleX(), circleY(), circleAlpha());
-            circle.Draw();
+
             Dialogues.CurDialogue?.Update();
             Dialogues.CurDialogue?.Draw(dialoguePanel, Fonts.Main(), Fonts.Main().BaseSize, 2);
             //dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
-            if (IsKeyPressed(KeyboardKey.Space))
+            if (IsMouseButtonPressed(Left) && UILayers.Current == UILayer.Game && !panel.IsAnyHovering())
             {
-                /*currenetCommand = commands[++currentCommandIndex];*/
-                Commands.ExecutedCount++;
-                /*saveMenu.SaveGame(0, new GameState
+                if (Dialogues.CurDialogue != null)
                 {
-                    CurrentBackground = Bg.CurrentBackground,
-                    CurrentDialogue = Dialogues.CurDialogue,
-                    LastCommandIndex = currentCommandIndex,
-                    SpritesOnScene = Sprites.ToDraw
-                });*/
+                    if (Dialogues.CurDialogue.IsFinishedDrawing())
+                    {
+                        Commands.ExecutedCount++;
+                    }
+                    else
+                    {
+                        Dialogues.CurDialogue.Skip();
+                    }
+                }
+                else
+                {
+                    Commands.ExecutedCount++;
+                }
+            }
+
+            if (GetMouseWheelMoveV().Y > 0)
+            {
             }
 
             panel.Draw();
+            circle.Update(circleX(), circleY(), circleAlpha());
+            circle.Draw();
             exitModal.Draw();
+
             break;
         case Scene.LoadMenu:
             saveMenu.Draw(toLoad: true);
@@ -291,6 +307,7 @@ while (!WindowShouldClose())
 
     EndDrawing();
 }
+
 Sounds.Unload();
 Musics.Unload();
 Fonts.Unload();
@@ -299,10 +316,10 @@ Textures.UnloadAll();
 CloseWindow();
 return;
 
-int circleY() => (int)(dialoguePanel.Y + dialoguePanel.Height - dialoguePanel.Height.ValueFromPercent(20));
+int circleY() => (int)(dialoguePanel.Y + dialoguePanel.Height - dialoguePanel.Height.ValueFromPercent(80));
 
 int circleX() => (int)(dialoguePanel.X + dialoguePanel.Width - dialoguePanel.Width.ValueFromPercent(3));
 
 float circleAlpha() =>
     dialoguePanel.Alpha < 1.0f ? 0.0f :
-    GS.CurrentState != null && dialogues[GS.CurrentState.CurrentDialogueIndex].IsFinishedDrawing() ? 1.0f : 0.0f;
+    Dialogues.CurDialogue != null && Dialogues.CurDialogue.IsFinishedDrawing() ? 1.0f : 0.0f;

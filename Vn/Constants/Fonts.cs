@@ -5,6 +5,7 @@ public static class Fonts
     private static Font MainFont;
     private static Font AccentFont;
     private static Font ArimoBoldFont;
+    private static Font ElMessiriMediumFont;
 
     private static int[] GetCodepoints()
     {
@@ -68,6 +69,16 @@ public static class Fonts
         return ArimoBoldFont;
     }
 
+    public static Font ElMessiriMedium(int fontSize = 22)
+    {
+        if (ElMessiriMediumFont.Texture.Id == 0 || ElMessiriMediumFont.BaseSize != fontSize)
+        {
+            ElMessiriMediumFont = LoadFontEx(Paths.Fonts("ElMessiri-Medium.ttf"), fontSize, Codepoints, 512);
+        }
+
+        return ElMessiriMediumFont;
+    }
+    
     public static void Unload()
     {
         if (MainFont.Texture.Id != 0) UnloadFont(MainFont);

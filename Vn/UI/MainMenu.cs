@@ -61,23 +61,23 @@ public class MainMenu
     {
         _background.Draw();
 
-        var textSize = MeasureTextEx(_font, _title, _font.BaseSize, 0);
+        var textSize = MeasureTextEx(_font, L(_title), _font.BaseSize, 0);
         var textPos = Text.CenterPosition(textSize, 0, -70);
 
         switch (OutlineStyle)
         {
             case OutlineStyle.None:
-                DrawTextEx(_font, _title, textPos, _font.BaseSize, 0, TitleColor);
+                DrawTextEx(_font, L(_title), textPos, _font.BaseSize, 0, TitleColor);
                 break;
             case OutlineStyle.Solid:
-                Text.DrawWithOutline(_font, _title, textPos, _font.BaseSize, 0, TitleColor, OutlineColor,
+                Text.DrawWithOutline(_font, L(_title), textPos, _font.BaseSize, 0, TitleColor, OutlineColor,
                     OutlineThickness);
                 break;
             case OutlineStyle.Shadow:
-                Text.DrawWithShadow(_font, _title, textPos, _font.BaseSize, 0, TitleColor, OutlineColor, ShadowOffset);
+                Text.DrawWithShadow(_font, L(_title), textPos, _font.BaseSize, 0, TitleColor, OutlineColor, ShadowOffset);
                 break;
             default:
-                DrawTextEx(_font, _title, textPos, _font.BaseSize, 0, TitleColor);
+                DrawTextEx(_font, L(_title), textPos, _font.BaseSize, 0, TitleColor);
                 break;
         }
 
