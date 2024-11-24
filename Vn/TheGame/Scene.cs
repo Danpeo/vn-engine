@@ -7,7 +7,8 @@ public enum Scene
     MainMenu,
     LoadMenu,
     SaveMenu,
-    Game
+    Game,
+    History
 }
 
 public static class Scenes
@@ -52,8 +53,12 @@ public static class Scenes
         }
     }
 
-    public static void GoBackWithRightMouse()
+    public static void GoBackWithRightMouse(Action? onGoBack = null)
     {
-        if (IsMouseButtonPressed(MouseButton.Right)) GoBack();
+        if (IsMouseButtonPressed(MouseButton.Right))
+        {
+            onGoBack?.Invoke();
+            GoBack();
+        }
     }
 }

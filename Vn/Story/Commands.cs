@@ -8,10 +8,8 @@ public abstract record Command
     private Command()
     {
     }
-
-    public record Say(Dialogue Dialogue) : Command;
-
-    public record SayAct(Dialogue Dialogue, Command[] Commands) : Command;
+    
+    public record Say(Dialogue Dialogue, Command[]? Commands = null) : Command;
 
     public record Bg(Background Background) : Command;
 
@@ -33,15 +31,14 @@ public static class Commands
     {
         switch (command)
         {
-            case Command.Say(var dialogue):
+            case Command.Say(var dialogue, var commands):
                 Dialogues.Add(dialogue);
-                break;
-            case Command.SayAct(var dialogue, var commands):
-                Dialogues.Add(dialogue);
-                foreach (var cmd in commands)
-                {
-                    Execute(cmd);
-                }
+                if (commands != null)
+                    foreach (var cmd in commands)
+                    {
+                        Execute(cmd);
+                    }
+
                 break;
             case Command.Bg(var background):
                 Bg.SetCurrent(background);

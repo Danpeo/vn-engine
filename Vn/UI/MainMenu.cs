@@ -41,7 +41,7 @@ public class MainMenu
             }
         })
         {
-            Font = Fonts.ArimoBold(55),
+            Font = Fonts.ElMessiriMedium(55),
         };
         _loadGameButton = new Button("Загрузить", () =>
         {
@@ -49,11 +49,11 @@ public class MainMenu
                 Scenes.Set(Scene.LoadMenu);
         })
         {
-            Font = Fonts.ArimoBold(55)
+            Font = Fonts.ElMessiriMedium(55)
         };
         _exitButton = new Button("Выйти", () => { _modal.Show(); })
         {
-            Font = Fonts.ArimoBold(55),
+            Font = Fonts.ElMessiriMedium(55),
         };
     }
 

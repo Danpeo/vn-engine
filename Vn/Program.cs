@@ -70,15 +70,16 @@ var currentDialogue = dialogues[currDialogueInex];
 
 const int panelPadding = 50;
 
+var panelHeight = Display.Width() < 1920 ? 200 : 150;
 
 var dialoguePanel = new DialoguePanel(
     panelPadding,
     Pos.PanelY(),
     Display.Width() - 2 * panelPadding,
-    150,
+    panelHeight,
     0.1f,
     16,
-    new Color(40, 40, 40, 255),
+    Colors.MainBg,
     DialoguePanelAnimation.Fade
 );
 
@@ -101,12 +102,85 @@ Musics.Load(Paths.Audio("cave.ogg"));
 Musics.Play();
 var commands = new List<Command>
 {
-    new Command.SayAct(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра."), [
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра." +
+                                "\"В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "v")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
+    
+    new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра."), [
         new Command.Music(Paths.Audio("forest.ogg"))
     ]),
-    new Command.Say(new(null, "Но его беспокойство было не о собственном комфорте — он сжимал свою драгоценную лютню," +
-                              " как будто это был единственный способ защитить её от стихии.")),
-    new Command.SayAct(new(null, "Trye with some more"), [
+    new Command.Say(new(null, "Trye with some more"), [
         new Command.DrawSprite(thomasSprite)
     ]),
 
@@ -143,21 +217,24 @@ var saveMenu = new SaveMenu(new(), menuBg, Fonts.ArimoBold(50));
 var panel = new ButtonPanel([
     new("Сохранить", () => Scenes.Set(Scene.SaveMenu))
     {
-        Font = Fonts.Main()
+        Font = Fonts.ElMessiriMedium(28)
     },
     new("Загрузить", () => Scenes.Set(Scene.LoadMenu))
     {
-        Font = Fonts.Main()
+        Font = Fonts.ElMessiriMedium(28)
     },
     new("Настройки", () => Console.WriteLine("Config clicked"))
     {
-        Font = Fonts.Main()
+        Font = Fonts.ElMessiriMedium(28)
     },
     new("Выйти", () => exitModal.Show())
     {
-        Font = Fonts.Main(),
+        Font = Fonts.ElMessiriMedium(28),
     }
 ]);
+
+var history = new HistoryPanel();
+
 while (!WindowShouldClose())
 {
     Musics.Update();
@@ -175,12 +252,7 @@ while (!WindowShouldClose())
         currBg = bgs.First();
         Bg.SetCurrent(currBg);
     }*/
-
-    if (IsMouseButtonPressed(Right) && UILayers.Current == UILayer.Game)
-    {
-        dialoguePanel.ToggleVisibility();
-    }
-
+    
     /*if (IsMouseButtonPressed(Left))
     {
         if (currDialogueInex < dialogues.Count - 1 && currentDialogue.IsFinishedDrawing())
@@ -213,7 +285,7 @@ while (!WindowShouldClose())
 
 
     dialoguePanel.Width = Display.Width() - 2 * panelPadding;
-    dialoguePanel.Height = Display.Height() / 5;
+    dialoguePanel.Height = Display.Height() / 5f;
 
     BeginDrawing();
     ClearBackground(Color.Black);
@@ -224,11 +296,26 @@ while (!WindowShouldClose())
             mainMenu.Draw();
             break;
         case Scene.Game:
+            
+            if (IsMouseButtonPressed(Right) && UILayers.Current == UILayer.Game)
+            {
+                dialoguePanel.ToggleVisibility();
+            }
+
+            if (GetMouseWheelMoveV().Y > 0)
+            {
+                Scenes.Set(Scene.History);
+            }
+            
             Bg.DrawPrev();
             Bg.DrawCurrent();
 
             Sprites.DrawSprites();
             Commands.Execute(commands[Commands.ExecutedCount]);
+            if (commands[Commands.ExecutedCount] is Command.Say)
+            {
+                Dialogues.AddToHistory(Dialogues.CurDialogue);
+            }
 
             if (Dialogues.CurDialogue != null)
             {
@@ -237,7 +324,8 @@ while (!WindowShouldClose())
 
 
             Dialogues.CurDialogue?.Update();
-            Dialogues.CurDialogue?.Draw(dialoguePanel, Fonts.Main(), Fonts.Main().BaseSize, 2);
+            var font = Display.Width() < 1920 ? 35 : 45;
+            Dialogues.CurDialogue?.Draw(dialoguePanel, Fonts.ElMessiriMedium(font), Fonts.ElMessiriMedium(font).BaseSize, 2);
             //dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
             if (IsMouseButtonPressed(Left) && UILayers.Current == UILayer.Game && !panel.IsAnyHovering())
@@ -274,6 +362,10 @@ while (!WindowShouldClose())
             break;
         case Scene.SaveMenu:
             saveMenu.Draw(toLoad: false);
+            break;
+        case Scene.History:
+            history.Update();
+            history.Draw();
             break;
         default:
             throw new ArgumentOutOfRangeException();

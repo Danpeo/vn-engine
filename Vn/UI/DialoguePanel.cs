@@ -8,6 +8,7 @@ namespace Vn.UI;
 
 public class DialoguePanel
 {
+    private readonly Func<float>? _updateYFunc;
     public float X { get; set; }
     public float Y { get; set; }
     public float Width { get; set; }
@@ -24,8 +25,9 @@ public class DialoguePanel
     private float _fadeSpeed = 2.0f;
 
     public DialoguePanel(float x, float y, float width, float height, float roundness, int segments, Color color,
-        DialoguePanelAnimation animation = DialoguePanelAnimation.Fade)
+        DialoguePanelAnimation animation = DialoguePanelAnimation.Fade, Func<float>? updateYFunc = null)
     {
+        _updateYFunc = updateYFunc;
         X = x;
         Y = y;
         Width = width;
@@ -38,10 +40,14 @@ public class DialoguePanel
     }
 
 
-    public void ToggleVisibility()
+    public void ToggleVisibility(bool? isVisible = null)
     {
         _isVisible = !_isVisible;
 
+        if (isVisible.HasValue)
+        {
+            _isVisible = isVisible.Value;
+        }
         switch (Animation)
         {
             case Slide:
@@ -80,13 +86,13 @@ public class DialoguePanel
                     Alpha -= _fadeSpeed * GetFrameTime();
                     if (Alpha < 0.0f) Alpha = 0.0f;
                 }
-                Y = Display.Height() - MathEx.ValueFromPercent(Display.Height(), 22.5f);
+                Y = _updateYFunc?.Invoke() ?? Display.Height() - MathEx.ValueFromPercent(Display.Height(), 22.5f);
 
                 break;
 
             case None:
                 Alpha = _isVisible ? 1.0f : 0.0f;
-                Y = Display.Height() - MathEx.ValueFromPercent(Display.Height(), 22.5f);
+                Y = _updateYFunc?.Invoke() ?? Display.Height() - MathEx.ValueFromPercent(Display.Height(), 22.5f);
 
                 break;
         }
