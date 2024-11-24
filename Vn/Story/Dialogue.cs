@@ -106,31 +106,37 @@ public class Dialogue
         float maxWidth = panel.Width - 2 * padding - 30;
 
         float currentLineWidth = 0;
-        for (int i = 0; i < _charIndex; i++)
+        int charIndex = 0;
+        var words = Text.Split(' ');
+
+        foreach (var word in words)
         {
-            char currentChar = Text[i];
-            string charStr = currentChar.ToString();
+            var wordSize = MeasureTextEx(font, word, fontSize, spacing);
 
-            Vector2 charSize = MeasureTextEx(font, charStr, fontSize, spacing);
-
-            // If the line length is greater than the max line length, start a new line
-            if (currentLineWidth + charSize.X > maxWidth)
+            if (currentLineWidth + wordSize.X > maxWidth)
             {
-                // Start new line
-                pos.X = panel.X + padding;
-
-                // Move Y down to start a new line
-                pos.Y += charSize.Y;
+                pos.X = panel.X + padding + 30;
+                pos.Y += wordSize.Y; 
                 currentLineWidth = 0;
             }
 
-            currentLineWidth += charSize.X;
+            foreach (var letter in word)
+            {
+                if (charIndex >= _charIndex) break;
 
-            TextColor = TextColor with { A = (byte)(_alphas[i] * 255) };
+                string charStr = letter.ToString();
+                Vector2 charSize = MeasureTextEx(font, charStr, fontSize, spacing);
 
-            DrawTextEx(font, charStr, pos, fontSize, spacing, TextColor);
+                TextColor = TextColor with { A = (byte)(_alphas[charIndex] * 255) };
 
-            pos.X += charSize.X;
+                DrawTextEx(font, charStr, pos, fontSize, spacing, TextColor);
+
+                pos.X += charSize.X;
+                charIndex++;
+            }
+
+            pos.X += MeasureTextEx(font, " ", fontSize, spacing).X;
+            currentLineWidth += wordSize.X + MeasureTextEx(font, " ", fontSize, spacing).X;
         }
 
         if (IsFinishedDrawing())
