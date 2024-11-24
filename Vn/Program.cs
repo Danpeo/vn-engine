@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics;
+using System.Numerics;
 using Vn.Audio;
 using Vn.Constants;
 using Vn.Story;
@@ -9,8 +10,13 @@ using static Raylib_cs.MouseButton;
 using static Vn.Loclization.Loc;
 using Textures = Vn.UI.Textures;
 
-//
+
 InitWindow(GameParams.ScreenWidth, GameParams.ScreenHeight, "Visual Novel");
+if (!Debugger.IsAttached)
+{
+    Display.ToggleFullscreenWindow(GameParams.ScreenWidth, GameParams.ScreenHeight);
+}
+
 SetConfigFlags(ConfigFlags.Msaa4xHint);
 InitAudioDevice();
 SetTargetFPS(60);
@@ -95,7 +101,7 @@ var bgs = new List<Background>
 Bg.SetCurrent(currBg);*/
 Bg.SetCurrent(bgs.FirstOrDefault(b => b.Path == GS.CurrentState?.CurrentBackgroundPath) ?? bgs.First());
 
-var circle = new PulseCircle(circleX(), circleY());
+var circle = new PulseCircle(circleX(), circleY(), color: Colors.Purple);
 
 Sounds.Load(AllSounds.ButtonClick, Paths.Audio("click.wav"));
 Musics.Load(Paths.Audio("cave.ogg"));
@@ -176,7 +182,7 @@ var commands = new List<Command>
     new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
     new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
     new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра.")),
-    
+
     new Command.Say(new(sasuke, "В бурю глаза Томаса слезились, а лицо жгло от неумолимого ветра."), [
         new Command.Music(Paths.Audio("forest.ogg"))
     ]),
@@ -210,7 +216,7 @@ var exitModal = new YesNoModal("Выйти из игры?", () =>
 var menuBg = new Background(Paths.Bg("tavern.png"));
 var mainMenu = new MainMenu(menuBg, "Таверна", Fonts.ElMessiriMedium(120))
 {
-    TitleColor = new Color(251, 241, 199, 255),
+    TitleColor = Colors.Title,
     OutlineStyle = OutlineStyle.Solid
 };
 var saveMenu = new SaveMenu(new(), menuBg, Fonts.ArimoBold(50));
@@ -223,7 +229,7 @@ var panel = new ButtonPanel([
     {
         Font = Fonts.ElMessiriMedium(28)
     },
-    new("Настройки", () => Console.WriteLine("Config clicked"))
+    new("История", () => Scenes.Set(Scene.History))
     {
         Font = Fonts.ElMessiriMedium(28)
     },
@@ -252,7 +258,7 @@ while (!WindowShouldClose())
         currBg = bgs.First();
         Bg.SetCurrent(currBg);
     }*/
-    
+
     /*if (IsMouseButtonPressed(Left))
     {
         if (currDialogueInex < dialogues.Count - 1 && currentDialogue.IsFinishedDrawing())
@@ -296,7 +302,7 @@ while (!WindowShouldClose())
             mainMenu.Draw();
             break;
         case Scene.Game:
-            
+
             if (IsMouseButtonPressed(Right) && UILayers.Current == UILayer.Game)
             {
                 dialoguePanel.ToggleVisibility();
@@ -306,7 +312,7 @@ while (!WindowShouldClose())
             {
                 Scenes.Set(Scene.History);
             }
-            
+
             Bg.DrawPrev();
             Bg.DrawCurrent();
 
@@ -325,7 +331,8 @@ while (!WindowShouldClose())
 
             Dialogues.CurDialogue?.Update();
             var font = Display.Width() < 1920 ? 35 : 45;
-            Dialogues.CurDialogue?.Draw(dialoguePanel, Fonts.ElMessiriMedium(font), Fonts.ElMessiriMedium(font).BaseSize, 2);
+            Dialogues.CurDialogue?.Draw(dialoguePanel, Fonts.ElMessiriMedium(font),
+                Fonts.ElMessiriMedium(font).BaseSize, 2);
             //dialogues[currDialogueInex].Draw(dialoguePanel, Fonts.Main, Fonts.Main.BaseSize, 2);
 
             if (IsMouseButtonPressed(Left) && UILayers.Current == UILayer.Game && !panel.IsAnyHovering())
@@ -408,7 +415,7 @@ Textures.UnloadAll();
 CloseWindow();
 return;
 
-int circleY() => (int)(dialoguePanel.Y + dialoguePanel.Height - dialoguePanel.Height.ValueFromPercent(80));
+int circleY() => (int)(dialoguePanel.Y + dialoguePanel.Height - dialoguePanel.Height.ValueFromPercent(90));
 
 int circleX() => (int)(dialoguePanel.X + dialoguePanel.Width - dialoguePanel.Width.ValueFromPercent(3));
 

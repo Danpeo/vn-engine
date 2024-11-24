@@ -27,7 +27,7 @@ public class HistoryPanel
         color: Colors.MainBg,
         animation: DialoguePanelAnimation.Fade,
         () => Display.Height() - MathEx.ValueFromPercent(Display.Height(), 94));
-    
+
 
     private List<string> WrapText(string text, float maxWidth)
     {
@@ -46,6 +46,7 @@ public class HistoryPanel
                 {
                     result.Add(currentLine);
                 }
+
                 currentLine = word;
             }
             else
@@ -86,7 +87,7 @@ public class HistoryPanel
         }
 
         var maxScroll = Math.Max(0, totalTextHeight - _dialoguePanel.Height);
-        
+
         if (!_sceneSetted)
         {
             _scrollOffset = (int)maxScroll;
@@ -108,21 +109,22 @@ public class HistoryPanel
             var textY = _dialoguePanel.Y + 10 - _scrollOffset;
             var maxWidth = _dialoguePanel.Width - 20;
 
-            BeginScissorMode((int)_dialoguePanel.X, (int)_dialoguePanel.Y, (int)_dialoguePanel.Width, (int)_dialoguePanel.Height);
+            BeginScissorMode((int)_dialoguePanel.X, (int)_dialoguePanel.Y, (int)_dialoguePanel.Width,
+                (int)_dialoguePanel.Height);
 
             foreach (var dialogue in Dialogues.History)
             {
                 if (!string.IsNullOrEmpty(dialogue.Character?.Name))
                 {
                     DrawTextEx(
-                        Fonts.Main(FontSize), 
-                        dialogue.Character.Name, 
-                        new Vector2(textX, textY), 
-                        Fonts.Main(FontSize).BaseSize, 
-                        1, 
-                        dialogue.Character.Color
+                        Fonts.Main(FontSize),
+                        dialogue.Character.Name,
+                        new Vector2(textX, textY),
+                        Fonts.Main(FontSize).BaseSize,
+                        1,
+                        dialogue.Character.Color with { A = 255 }
                     );
-                    textY += FontSize + 5; 
+                    textY += FontSize + 5;
                 }
 
                 var wrappedLines = WrapText(dialogue.Text, maxWidth);
@@ -136,15 +138,16 @@ public class HistoryPanel
                     if (textY + FontSize >= _dialoguePanel.Y)
                     {
                         DrawTextEx(
-                            Fonts.Main(FontSize), 
-                            line, 
-                            new Vector2(textX, textY), 
-                            Fonts.Main(FontSize).BaseSize, 
-                            1, 
-                            dialogue.TextColor 
+                            Fonts.Main(FontSize),
+                            line,
+                            new Vector2(textX, textY),
+                            Fonts.Main(FontSize).BaseSize,
+                            1,
+                            dialogue.TextColor with { A = 255 }
                         );
                     }
-                    textY += FontSize + 5; 
+
+                    textY += FontSize + 5;
                 }
             }
 

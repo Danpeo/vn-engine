@@ -15,7 +15,7 @@ public class Button
     public Color OutlineColor { get; set; } = Color.Black;
     public Color ButtonColor { get; set; } = Color.Gray;
     public Color ButtonHighlightColor { get; set; } = Color.Beige;
-    public Color HighlightColor { get; set; } = Color.Gold;
+    public Color HighlightColor { get; set; } = new(250, 189, 47, 255);
     public int OutlineThickness { get; set; } = 2;
     public Vector2 ShadowOffset { get; set; } = new(6, 6);
     public Font Font { get; set; } = Fonts.ArimoBold();
